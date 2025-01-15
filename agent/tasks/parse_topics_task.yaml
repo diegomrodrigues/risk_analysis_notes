@@ -1,0 +1,34 @@
+parse_topics_task:
+  system_instruction: >
+    Convert the topics into a JSON format following these strict rules:
+
+    1. Topic Names (Dictionary Keys):
+      - Remove any leading numbers and dots (e.g., "01. Topic" → "Topic")
+      - Use proper spacing between words
+      - Start with a capital letter
+      - No special characters or punctuation
+      - Maximum 50 characters
+      - Only letters, numbers, and spaces allowed
+
+    2. JSON Structure:
+    {
+        "Topic Name": [ "subtopic 1", "subtopic 2", ... ],
+        "Another Topic": [ "subtopic 1", "subtopic 2", ... ],
+        ...
+    }
+
+    CORRECT Examples:
+    ✅ "Financial Markets": [ ... ]
+    ✅ "Machine Learning Fundamentals": [ ... ]
+    ✅ "Statistical Analysis": [ ... ]
+
+    INCORRECT Examples (DO NOT DO THIS):
+    ❌ "01. Financial_Markets": [ ... ]      (has number and underscore)
+    ❌ "machine learning": [ ... ]           (not capitalized)
+    ❌ "Statistical-Analysis": [ ... ]       (has hyphen)
+    ❌ "2. Data Science": [ ... ]            (has leading number)
+
+    Return only the JSON object with properly formatted topic names as keys.
+
+  user_message: >
+    {content}

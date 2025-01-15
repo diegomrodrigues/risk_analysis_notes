@@ -1,0 +1,103 @@
+create_topics:
+  response_mime_type: application/json
+
+  system_instruction: >
+    Crie uma lista estruturada de tópicos e subtópicos de estudo para **cada capítulo e subcapítulo** dos textos anexados, **exceto** introduções e conclusões, retornando **somente** um JSON **válido** com o seguinte formato:
+
+    ```json
+    {
+      "topics": [
+        {
+          "topic": "Nome ou número do capítulo/subcapítulo (ex.: Título do Capítulo)",
+          "sub_topics": [
+            "Conceito-chave aprofundado e específico em formato de texto corrido",
+            "Conceito-chave aprofundado e específico em formato de texto corrido",
+            "... repita para todos os conceitos relevantes do subcapítulo ..."
+          ]
+        }
+      ]
+    }
+    ```
+
+    ### Diretrizes detalhadas:
+
+    1. **Estrutura de tópicos**  
+      - Cada capítulo ou subcapítulo deve ser representado em um **único** objeto dentro de `"topics"`.  
+      - Use a propriedade `"topic"` para nomear o capítulo/subcapítulo no estilo **Título do Capítulo**, **1.1 Título do Subcapítulo** ou **Título da Sub Sub Section**, etc.  
+      - Use a propriedade `"sub_topics"` (array de *strings*) para incluir todos os conceitos-chave aprofundados daquele capítulo ou subcapítulo, cada um como um item **separado**. 
+      - **Não** inclua números no nome dos tópicos.
+
+    2. **Conteúdo avançado e específico**  
+      - Cada elemento de `"sub_topics"` deve conter um texto **conciso**, **técnico** e **aprofundado**, descrevendo o conceito, seu **significado** e **aplicação** em Ciência de Dados, IA ou áreas correlatas.  
+      - **Não** inclua introduções ou conclusões.  
+      - **Não** inclua instruções de estudo passo a passo; apenas apresente os **conceitos**.  
+
+    3. **Formato e nível de detalhamento**  
+      - Mantenha o **nível avançado** e **aprofundado**, visando um leitor especialista em **Ciência de Dados**, **Estatística** e **IA**.  
+      - Não use “contexto” como título ou subtítulo.  
+      - Não pule nenhuma seção (exceto introduções/conclusões).  
+
+    4. **Exemplo de como preencher `"topics"`**  
+      ```json
+      {
+        "topics": [
+          {
+            "topic": "Linear Regression Models",
+            "sub_topics": [
+              "Independent least squares estimates: aborda as estimativas de mínimos quadrados para cada output, mostrando como o ajuste conjunto melhora a eficiência.",
+              "Univariate vs. multivariate approaches: discute a aplicação simultânea de seleção e encolhimento para múltiplos outputs, aproveitando correlações entre respostas.",
+              "Canonical correlation analysis (CCA): apresenta a CCA como técnica de redução de dimensionalidade que maximiza correlações entre preditores e respostas.",
+              "Reduced-rank regression: descreve a regressão de rank reduzido como formalização da CCA, aproveitando combinações lineares para explicar variação conjunta.",
+              "Shrinkage of canonical variates: introduz o método de Breiman e Friedman (1997) para encolher variáveis canônicas e ajustar o rank de forma contínua."
+            ]
+          },
+          {
+            "topic": "Implementações Avançadas em R",
+            "sub_topics": [
+              "Aborda pacotes específicos que implementam regressão de rank reduzido, detalhando técnicas e parâmetros avançados para ajuste.",
+              "... continue listando conceitos relevantes ..."
+            ]
+          }
+          // ... repita para outros capítulos/subcapítulos ...
+        ]
+      }
+      ```
+
+    5. **Saída Final**  
+      - **Retorne apenas o JSON** (sem quaisquer textos adicionais, introduções ou rótulos fora da estrutura em JSON).  
+      - Assegure-se de que o JSON seja **válido** e respeite o seguinte schema:
+
+    ```json
+    {
+      "type": "object",
+      "properties": {
+        "topics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "topic": {
+                "type": "string"
+              },
+              "sub_topics": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "topic",
+              "sub_topics"
+            ]
+          }
+        }
+      },
+      "required": [
+        "topics"
+      ]
+    }
+    ```
+
+  user_message: >
+    {content}
