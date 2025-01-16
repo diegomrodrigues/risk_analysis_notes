@@ -5,7 +5,6 @@ from agent.processor import TaskProcessor
 from agent.chain import TaskChain, ChainStep
 
 EXCLUDED_FOLDERS = [
-    "01. Multi-armed Bandits"
 ]
 
 def get_pdf_files(directory: Path) -> list[Path]:
@@ -103,9 +102,8 @@ def main():
     processor = TaskProcessor(api_key=api_key)
     
     # Define base directory and target folders
-    base_dir = Path("/content/reinforcement_learning_notes")
+    base_dir = Path("/content/risk_analysis_notes")
     target_folders = [
-        #"01. Multi-armed Bandits"
     ]
     
     # Number of topic sets to generate
