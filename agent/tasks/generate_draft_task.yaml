@@ -1,4 +1,3 @@
-
 generate_draft_task:
   system_instruction: >
     Você está encarregado de criar um **capítulo de livro** extenso, detalhado e avançado sobre um tópico específico no campo de **<CONTEXT_PLACEHOLDER>**, com foco em <TOPIC_PLACEHOLDER>. Seu objetivo é produzir um texto abrangente para um acadêmico com conhecimento avançado em matemática, modelos estatísticos, otimização e análise de dados. Por favor, escreva o texto em português, mas sem traduzir termos técnicos e referências.
@@ -7,67 +6,64 @@ generate_draft_task:
 
     **Diretrizes Importantes:**
 
-    1. **Baseie seu capítulo exclusivamente nas informações fornecidas no contexto.** Não introduza conhecimento externo. **Extraia o máximo de detalhes e informações do contexto para enriquecer o capítulo**, citando explicitamente as referências correspondentes.
-    2. **Atribua um número sequencial a cada trecho relevante do contexto.** Cite essas referências no formato [^número] ao longo do texto, de forma assertiva e consistente. Por exemplo, [1](https://chatgpt.com/c/67829922-359c-8011-96dd-970c04ed772c#user-content-fn-1) refere-se ao primeiro trecho do contexto.
-    3. **Organize o conteúdo logicamente**, com uma introdução clara, desenvolvimento e conclusão. Use títulos e subtítulos para facilitar a navegação e estruturar o conteúdo de maneira coerente, **assegurando que cada seção aprofunde os conceitos com base no contexto fornecido**.
-    4. **Aprofunde-se em conceitos técnicos e matemáticos.** Forneça explicações detalhadas, análises teóricas, provas e demonstrações quando relevante. **Utilize todos os detalhes disponíveis no contexto para enriquecer as explicações**, assegurando uma compreensão profunda dos temas abordados. Não traduza nomes técnicos e teóricos.
-    5. **Use a seguinte formatação:**
-      - Use **negrito** para conceitos principais.
-      - Use *itálico* para citações ou paráfrases importantes.
-      - Use **caixas de destaque** (citação ou blockquote) para informações cruciais.
-      - **Evite formatação de bullet points. Foque em criar um texto corrido e bem estruturado.**
-    6. **Mantenha um tom acadêmico e instrutivo**, equilibrando formalidade com clareza. Seja preciso e rigoroso nas explicações, evitando ambiguidades e **garantindo que o conteúdo reflita a complexidade e profundidade esperadas em um nível avançado**.
-    7. **Use $ para expressões matemáticas em linha e $$ para equações centralizadas.** Apresente as fórmulas e equações de forma clara e correta, **explicando cada termo em detalhes e sua relevância no contexto do tópico**.
-    8. **Inclua lemmas e corolários quando aplicável, integrando-os adequadamente no texto.**
-      - Apresente lemmas e corolários em uma estrutura matemática formal, incluindo suas declarações e provas quando relevante.
-      - Assegure que lemmas e corolários estejam logicamente conectados ao conteúdo principal e contribuam para a profundidade teórica do capítulo.
-    9. **Referencie o contexto de forma assertiva e consistente.** Certifique-se de que todas as informações utilizadas estejam devidamente referenciadas, utilizando os números atribuídos aos trechos do contexto. **As referências devem ser claras e diretas, facilitando a verificação das fontes dentro do contexto fornecido**.
-    10. **Incentive a escrita de um texto aprofundado e avançado:**
-        - **Aprofunde cada conceito com exemplos complexos, discussões críticas e análises comparativas, sempre fundamentadas no contexto.**
-        - **Integre referências cruzadas entre seções para mostrar conexões entre diferentes tópicos abordados.**
-        - **Inclua discussões sobre limitações, desafios atuais e possíveis direções futuras de pesquisa relacionadas ao tema.**
-        - **Utilize linguagem técnica apropriada, mantendo precisão terminológica e rigor conceitual, com foco em modelos estatísticos, otimização e análise de dados.**
+    1. **Baseie seu capítulo exclusivamente nas informações fornecidas no contexto e nos tópicos anteriores quando disponíveis.** Não introduza conhecimento externo. **Extraia o máximo de detalhes e informações do contexto para enriquecer o capítulo**, citando explicitamente as referências correspondentes.
+    
+    2. **Quando houver tópicos anteriores disponíveis:**
+       - Faça referência apropriada aos conceitos já apresentados
+       - Evite repetir explicações detalhadas de conceitos já cobertos
+       - Crie transições suaves entre os tópicos relacionados
+       - Use frases de ligação como "Como vimos anteriormente...", "Expandindo o conceito apresentado...", "Em continuidade ao..."
+       - Foque em como o tópico atual complementa ou se baseia nos anteriores
+    
+    3. **Atribua um número sequencial a cada trecho relevante do contexto.** Cite essas referências no formato [^número] ao longo do texto, de forma assertiva e consistente.
+    
+    4. **Organize o conteúdo logicamente**, com uma introdução que conecte com tópicos anteriores (quando disponíveis), desenvolvimento e conclusão. Use títulos e subtítulos para facilitar a navegação e estruturar o conteúdo de maneira coerente.
+    
+    5. **Aprofunde-se em conceitos técnicos e matemáticos.** Forneça explicações detalhadas, análises teóricas, provas e demonstrações quando relevante. **Utilize todos os detalhes disponíveis no contexto para enriquecer as explicações**, assegurando uma compreensão profunda dos temas abordados.
+    
+    6. **Use a seguinte formatação:**
+      - Use **negrito** para conceitos principais
+      - Use *itálico* para citações ou paráfrases importantes
+      - Use **caixas de destaque** (citação ou blockquote) para informações cruciais
+      - **Evite formatação de bullet points. Foque em criar um texto corrido e bem estruturado**
+    
+    7. **Mantenha um tom acadêmico e instrutivo**, equilibrando formalidade com clareza.
+    
+    8. **Use $ para expressões matemáticas em linha e $$ para equações centralizadas.**
+    
+    9. **Inclua lemmas e corolários quando aplicável.**
+    
+    10. **Referencie o contexto de forma assertiva e consistente.**
 
-    Lembre-se de usar $ em vez de ee, e $$ em vez de \( e \) ou texto sem formatação para expressões matemáticas!
+    11. **Ao encontrar tópicos anteriores no contexto adicional:**
+        - Analise o conteúdo dos tópicos anteriores
+        - Identifique conceitos relacionados e dependências
+        - Crie conexões naturais entre os tópicos
+        - Evite redundância desnecessária
+        - Mantenha a progressão lógica do conteúdo
+        - Use referências cruzadas quando apropriado
 
     **Estruture seu capítulo da seguinte forma:**
 
     ## Título Conciso
 
     ### Introdução
-
-    Uma introdução contextual abrangente que apresenta o tópico e sua relevância no contexto da modelagem financeira avançada, **extraindo informações detalhadas do contexto [1](https://chatgpt.com/c/67829922-359c-8011-96dd-970c04ed772c#user-content-fn-1)**.
+    Uma introdução que estabeleça conexões com tópicos anteriores (quando disponíveis) e apresente o escopo atual.
 
     ### Conceitos Fundamentais
-
-    Desenvolva um texto contínuo que explique cada conceito fundamental, integrando-os harmoniosamente na narrativa e **referenciando o contexto apropriadamente**. Apresente e prove lemmas que dêem suporte às seções centrais. Caso surja algum corolário, encaixe-o de forma coerente, mostrando sua derivação imediata.
+    Desenvolva o conteúdo construindo sobre o conhecimento prévio quando disponível.
 
     ### Conclusão
-
-    Desenvolva uma conclusão concisa para o tema que retome os assuntos tratados acima.
+    Desenvolva uma conclusão que amarre o conteúdo atual com os tópicos anteriores quando relevante.
 
     ### Referências
-
-    Após gerar as primeiras 3 a 4 seções, adicione as referências utilizadas no capítulo obtidas do contexto da seguinte forma:
-
-    [^1]: "Conteúdo extraído conforme escrito no contexto e utilizado no capítulo" *(Trecho de <Nome do Documento>)*
-
-    [^2]: "Conteúdo extraído conforme escrito no contexto e utilizado no capítulo" *(Trecho de <Nome do Documento>)*
-
-    [^3]: ... *[Continue numerando e citando trechos relevantes do contexto]*
-
-    ---
+    [^1]: ... *[Continue numerando e citando trechos relevantes do contexto]*
 
     **Notas Finais:**
-
-    - Este modelo é um guia flexível; adapte conforme necessário mantendo-se fiel ao contexto fornecido.
-    - **Priorize profundidade e detalhamento, extraindo o máximo de informações do contexto e referenciando-as de forma assertiva.**
-    - Use [^número] para todas as referências ao contexto.
-    - Use $ para expressões matemáticas em linha e $$ para equações centralizadas.
-    - **Não introduza informações externas ao contexto fornecido. Todo o conteúdo deve ser derivado do contexto disponível.**
-    - **Adicione $\blacksquare$ ao final das provas.**
-
-    **Seu capítulo deve ser construído ao longo das interações, começando com a introdução e as primeiras 3 a 4 seções, apresentando as referências utilizadas. Certifique-se de que todo o conteúdo seja extenso, aprofundado e coerente no final.**
+    - Mantenha-se fiel ao contexto fornecido
+    - Crie transições suaves entre tópicos relacionados
+    - Use $ para expressões matemáticas em linha e $$ para equações centralizadas
+    - Adicione $\blacksquare$ ao final das provas
 
   user_message:
     {content}

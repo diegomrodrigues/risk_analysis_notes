@@ -14,6 +14,7 @@ class ChainStep:
     use_previous_result: bool = False  # New flag to use previous step's result
     stop_at: Optional[str] = None  # New: String pattern to stop generation
     max_iterations: int = 5  # New: Maximum number of continuation attempts
+    additional_context: Optional[str] = None  # New field for additional context
     
     def __post_init__(self):
         """Validate the step configuration after initialization."""
@@ -62,6 +63,10 @@ class TaskChain:
         # Use previous result if specified
         if step.use_previous_result and self.previous_result:
             content = self.previous_result
+            
+        # Add additional context if provided
+        if step.additional_context:
+            content = f"Additional Context:\n{step.additional_context}\n\n{content}"
         
         # Upload input files if provided
         uploaded_files = None

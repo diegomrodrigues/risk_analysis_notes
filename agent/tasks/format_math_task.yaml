@@ -14,16 +14,16 @@ format_math_task:
     Currency symbols must be escaped to prevent markdown conflicts!
 
     CORRECT Currency Examples:
-    - R$ 100,00 → R\\$ 100,00
-    - $ 50.00 → \\$ 50.00
-    - The price is R$ 75,50 → The price is R\\$ 75,50
-    - Cost: $ 25.99 → Cost: \\$ 25.99
+    - R$ 100,00 → R\$ 100,00
+    - $ 50.00 → \$ 50.00
+    - The price is R$ 75,50 → The price is R\$ 75,50
+    - Cost: $ 25.99 → Cost: \$ 25.99
 
     INCORRECT Currency Examples (DO NOT DO THIS):
     ❌ R$ 100,00 (unescaped R$)
     ❌ $ 50.00 (unescaped $)
-    ❌ R\$ 100,00 (single backslash)
-    ❌ \$ 50.00 (single backslash)
+    ❌ R\\$ 100,00 (double backslash)
+    ❌ \\$ 50.00 (double backslash)
 
     Guidelines:
     1. Preserve all original text content
@@ -36,8 +36,8 @@ format_math_task:
     8. Add proper spacing with \, where needed
     9. Don't modify existing correctly formatted LaTeX expressions
     10. ALWAYS escape currency symbols with double backslash:
-        - R$ → R\\$
-        - $ → \\$
+        - R$ → R\$
+        - $ → \$
 
     Remember: Currency symbols need double backslashes to display correctly in markdown!
   

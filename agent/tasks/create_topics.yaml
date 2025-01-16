@@ -28,9 +28,32 @@ create_topics:
       - **Não** inclua números no nome dos tópicos.
 
     2. **Conteúdo avançado e específico**  
-      - Cada elemento de `"sub_topics"` deve conter um texto **conciso**, **técnico** e **aprofundado**, descrevendo o conceito, seu **significado** e **aplicação** em Ciência de Dados, IA ou áreas correlatas.  
-      - **Não** inclua introduções ou conclusões.  
-      - **Não** inclua instruções de estudo passo a passo; apenas apresente os **conceitos**.  
+      - Cada elemento de `"sub_topics"` deve ser **detalhado** e **abrangente**, incluindo:
+        * Definição técnica completa do conceito com terminologia específica da área
+        * Principais características, componentes e propriedades fundamentais
+        * Relações e interdependências com outros conceitos relevantes
+        * Implicações práticas ou teóricas importantes
+        * Limitações, restrições e casos especiais
+        * Fundamentação matemática quando aplicável
+        * Aspectos metodológicos críticos
+        * Estado da arte e desenvolvimentos recentes
+      - Extraia do texto base:
+        * Todos os termos técnicos relevantes
+        * Definições formais e informais
+        * Exemplos significativos que ilustrem conceitos complexos
+        * Relações causais e correlações importantes
+        * Metodologias e frameworks mencionados
+        * Debates teóricos e diferentes perspectivas apresentadas
+      - Organize os subtópicos de forma que:
+        * Conceitos fundamentais precedam conceitos avançados
+        * Haja uma linha clara de desenvolvimento do conhecimento
+        * As relações entre diferentes áreas sejam explícitas
+        * Os pré-requisitos conceituais estejam claramente estabelecidos
+      - Evite:
+        * Simplificações excessivas de conceitos complexos
+        * Omissão de detalhes técnicos importantes
+        * Redundância entre subtópicos
+        * Generalidades sem conteúdo técnico específico
 
     3. **Formato e nível de detalhamento**  
       - Mantenha o **nível avançado** e **aprofundado**, visando um leitor especialista em **Ciência de Dados**, **Estatística** e **IA**.  
@@ -42,23 +65,23 @@ create_topics:
       {
         "topics": [
           {
-            "topic": "Linear Regression Models",
+            "topic": "Fundamentos Estatísticos",
             "sub_topics": [
-              "Independent least squares estimates: aborda as estimativas de mínimos quadrados para cada output, mostrando como o ajuste conjunto melhora a eficiência.",
-              "Univariate vs. multivariate approaches: discute a aplicação simultânea de seleção e encolhimento para múltiplos outputs, aproveitando correlações entre respostas.",
-              "Canonical correlation analysis (CCA): apresenta a CCA como técnica de redução de dimensionalidade que maximiza correlações entre preditores e respostas.",
-              "Reduced-rank regression: descreve a regressão de rank reduzido como formalização da CCA, aproveitando combinações lineares para explicar variação conjunta.",
-              "Shrinkage of canonical variates: introduz o método de Breiman e Friedman (1997) para encolher variáveis canônicas e ajustar o rank de forma contínua."
+              "Teoria da probabilidade e variáveis aleatórias: fundamentação matemática das distribuições de probabilidade, axiomas de Kolmogorov, conceitos de medida e espaço amostral aplicados à modelagem estatística",
+              "Inferência estatística e estimação: métodos de máxima verossimilhança, estimadores não-viesados de variância mínima (UMVUE), propriedades assintóticas e eficiência de estimadores",
+              "Testes de hipóteses avançados: abordagens frequentista e bayesiana, poder do teste, tamanho do efeito e métodos de correção para múltiplos testes",
+              "Teoria da decisão estatística: funções de perda, estimadores de Bayes, minimaxidade e admissibilidade de procedimentos estatísticos"
             ]
           },
           {
-            "topic": "Implementações Avançadas em R",
+            "topic": "Modelos de Aprendizado Profundo",
             "sub_topics": [
-              "Aborda pacotes específicos que implementam regressão de rank reduzido, detalhando técnicas e parâmetros avançados para ajuste.",
-              "... continue listando conceitos relevantes ..."
+              "Arquiteturas de redes neurais: análise comparativa entre CNNs, RNNs e Transformers, incluindo vantagens computacionais e limitações teóricas de cada abordagem",
+              "Otimização em deep learning: algoritmos de primeira e segunda ordem, métodos adaptativos, regularização implícita e explícita",
+              "Representações aprendidas: teoria da informação aplicada a embeddings, propriedades geométricas do espaço latente, disentanglement de fatores",
+              "Generalização em deep learning: complexidade de Rademacher, bounds PAC-Bayes, double descent e reconciliação com teoria estatística clássica"
             ]
           }
-          // ... repita para outros capítulos/subcapítulos ...
         ]
       }
       ```
