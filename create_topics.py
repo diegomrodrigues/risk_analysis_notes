@@ -24,8 +24,8 @@ def load_tasks_config(tasks_dir: str = './agent/tasks') -> dict:
     
     return tasks_config
 
-def process_directory(directory: Path, processor: TaskProcessor, tasks_config: dict) -> None:
-    """Process a single directory to generate topics JSON."""
+def process_directory(directory: Path, processor: TaskProcessor, tasks_config: dict, num_topics: int = 3) -> None:
+    """Process a single directory to generate topics JSON and merge them."""
     print(f"\nProcessing directory: {directory}")
     
     pdf_files = get_pdf_files(directory)
@@ -34,26 +34,46 @@ def process_directory(directory: Path, processor: TaskProcessor, tasks_config: d
         return
 
     try:
-        # Create chain for topics generation
-        topics_steps = [
+        # Generate N separate topic JSONs
+        all_topics_results = []
+        for i in range(num_topics):
+            print(f"\nGenerating topics set {i+1}/{num_topics}")
+            topics_steps = [
+                ChainStep(
+                    name=f"Generate Topics Set {i+1}",
+                    tasks=["create_topics"],
+                    input_files=pdf_files,
+                    expect_json=True
+                )
+            ]
+            
+            topics_chain = TaskChain(processor, tasks_config, topics_steps)
+            topics_result = topics_chain.run("")  # Empty content since we're using PDFs
+            
+            if not topics_result:
+                raise Exception(f"Failed to generate topics set {i+1}")
+                
+            all_topics_results.append(topics_result)
+
+        # Merge all topics
+        merge_steps = [
             ChainStep(
-                name="Generate Topics",
-                tasks=["create_topics"],
-                input_files=pdf_files,
+                name="Merge Topics",
+                tasks=["merge_topics"],
                 expect_json=True
             )
         ]
         
-        topics_chain = TaskChain(processor, tasks_config, topics_steps)
-        topics_result = topics_chain.run("")  # Empty content since we're using PDFs
+        merge_chain = TaskChain(processor, tasks_config, merge_steps)
+        merged_result = merge_chain.run("\n".join(all_topics_results))
         
-        if not topics_result:
-            raise Exception("Failed to generate topics")
+        if not merged_result:
+            raise Exception("Failed to merge topics")
             
-        # Save topics to file
+        # Save merged topics to file
         output_file = directory / "topics.json"
-        output_file.write_text(topics_result, encoding='utf-8')
-        print(f"✔️ Topics saved to: {output_file}")
+        output_file.write_text(merged_result, encoding='utf-8')
+        print(f"✔️ Merged topics saved to: {output_file}")
 
     except Exception as e:
         print(f"❌ Failed to process directory: {directory}")
@@ -88,6 +108,9 @@ def main():
         #"01. Multi-armed Bandits"
     ]
     
+    # Number of topic sets to generate
+    num_topics = 3  # You can adjust this number
+    
     # If no target folders specified, get all numbered folders
     if not target_folders:
         target_folders = get_numbered_folders(base_dir)
@@ -96,7 +119,7 @@ def main():
     for folder in target_folders:
         directory = base_dir / folder
         if directory.exists():
-            process_directory(directory, processor, tasks_config)
+            process_directory(directory, processor, tasks_config, num_topics)
         else:
             print(f"Directory not found: {directory}")
 
