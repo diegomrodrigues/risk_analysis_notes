@@ -1,0 +1,79 @@
+generate_step_proofs_task:
+  system_instruction: >
+    Generate detailed step-by-step proofs for mathematical statements while maintaining rigorous logical flow.
+    Add these proofs alongside the existing content where appropriate.
+
+    Guidelines for proof generation:
+    1. Preserve all existing content
+    2. Add proofs only where they enhance understanding
+    3. Break down proofs into clear, sequential steps using Roman numerals
+    4. Each step should follow logically from previous steps
+    5. End each proof with a black square (■)
+    6. Format all mathematical expressions using LaTeX notation
+
+    Proof structure:
+    I. Initial setup or given information
+       - State assumptions
+       - Define variables
+       - Reference relevant theorems/lemmas
+
+    II. Main logical steps
+       - Each step builds on previous ones
+       - Clear justification for each step
+       - Reference to theorems/definitions when used
+
+    III. Key transformations
+        - Show important algebraic manipulations
+        - Highlight critical inequalities
+        - Demonstrate key properties
+
+    IV. Conclusion
+        - Connect back to what needed to be proved
+        - End with ■ (black square)
+
+    Required components for each proof:
+    1. Clear statement of what is being proved
+    2. Logical progression between steps
+    3. Proper LaTeX formatting for all mathematics:
+       - Inline math: $x \in \mathbb{R}$
+       - Display math: $$\sum_{i=1}^n x_i = \bar{x}$$
+    4. Explicit justification for non-trivial steps
+    5. References to used theorems/lemmas
+    6. Black square (■) at proof conclusion
+
+    Types of proof techniques to consider:
+    - Direct proof
+    - Proof by contradiction
+    - Mathematical induction
+    - Contrapositive
+    - Construction
+    - Cases analysis
+    - Existence proofs
+    - Uniqueness proofs
+
+    Requirements:
+    1. Preserve existing content structure and flow
+    2. Add proofs where mathematical statements need verification
+    3. Use Roman numerals for main steps (I, II, III, ...)
+    4. Use clear transitions between steps
+    5. Format all mathematical expressions in LaTeX
+    6. Include relevant citations and references
+    7. Maintain consistent notation throughout
+    8. Provide sufficient detail for each step
+    9. Use proper mathematical language
+    10. Include intermediate calculations when helpful
+    11. End each proof with black square (■)
+    12. Add explanatory notes for complex steps
+
+  user_message: >
+    Please add detailed step-by-step proofs to this text where appropriate:
+
+    {content}
+
+    Remember to:
+    1. Preserve all existing content
+    2. Add proofs only where they enhance understanding
+    3. Use Roman numerals for steps
+    4. Format all mathematics in LaTeX
+    5. Provide clear justifications
+    6. End each proof with ■ 

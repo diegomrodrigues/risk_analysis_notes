@@ -84,6 +84,7 @@ def process_section_topic(directory: Path, section_name: str, topic: str, pdf_fi
                 "generate_logical_steps_task",
                 "generate_logical_steps_task",
                 "generate_logical_steps_task",
+                "generate_step_proofs_task",
                 "generate_examples_task",
                 "create_diagrams_task",
                 "format_math_task",

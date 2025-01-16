@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import List, Dict, Any, Optional
 from pathlib import Path
 from .processor import TaskProcessor
+import json
 
 @dataclass
 class ChainStep:
@@ -103,12 +104,27 @@ class TaskChain:
                         current_content,
                         files=uploaded_files
                     )
+                    
                     if result:
                         if iterations > 0:
                             # Append new content for continuations
                             current_content += result
                         else:
                             current_content = result
+
+                        # Validate JSON if expected
+                        if step.expect_json:
+                            try:
+                                json.loads(current_content)
+                                # If JSON is valid, we can break the iteration loop
+                                break
+                            except json.JSONDecodeError:
+                                # Continue iterations if JSON is incomplete
+                                if iterations < step.max_iterations - 1:
+                                    continue
+                                else:
+                                    raise Exception("❌ Failed to get complete JSON response after max iterations")
+
                     else:
                         print(f"❌ Step failed at task: {task_name}")
                         return None
