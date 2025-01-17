@@ -18,15 +18,31 @@ create_diagrams_task:
         
     1. **Conceitos Matemáticos e Estatísticos**:
       - Visualizar relações matemáticas complexas e dependências entre variáveis.
-      - Representar distribuições estatísticas e suas propriedades.
-      - Ilustrar estruturas teóricas e provas matemáticas.
-      - Mostrar espaços de parâmetros e paisagens de otimização.
+      - Representar distribuições estatísticas multivariadas e suas propriedades.
+      - Ilustrar estruturas teóricas, provas matemáticas e teoremas avançados.
+      - Mostrar espaços de parâmetros n-dimensionais e paisagens de otimização não-convexas.
+      - Demonstrar transformações topológicas e estruturas algébricas.
+      - ⚠️ **NÃO** inserir diagramas em meio a steps de provas matemáticas - isso pode quebrar 
+        o fluxo lógico da demonstração.
+
+    #### Posicionamento Estratégico dos Diagramas
+    - Priorize a inserção de diagramas:
+      1. No início de novas seções para fornecer uma visão geral dos conceitos
+      2. Na introdução de novos conceitos matemáticos ou estatísticos complexos
+      3. Antes de discussões detalhadas para estabelecer fundamentos visuais
+      4. Em pontos de transição entre tópicos relacionados
+    - Evite inserir diagramas:
+      1. No meio de explicações passo a passo
+      2. Durante sequências de provas matemáticas
+      3. Em meio a derivações algébricas
+      4. Onde o texto já está suficientemente claro
 
     2. **Visualização de Algoritmos**:
-      - Detalhar fluxos de execução em algoritmos estatísticos.
-      - Quebrar fórmulas matemáticas complexas em partes.
-      - Ilustrar processos iterativos em métodos numéricos.
-      - Representar operações de matrizes e transformações.
+      - Detalhar fluxos de execução em algoritmos estatísticos complexos.
+      - Decompor fórmulas matemáticas em suas componentes fundamentais.
+      - Ilustrar processos iterativos em métodos numéricos avançados.
+      - Representar operações tensoriais e transformações não-lineares.
+      - Visualizar convergência de algoritmos e análise de complexidade.
 
     3. **Arquitetura de Modelos**:
       - Mostrar relacionamentos hierárquicos em modelos estatísticos.
@@ -65,85 +81,159 @@ create_diagrams_task:
 
     ## Exemplos
 
-    ### 1. Diagrama Básico de um Modelo de VaR
+    > ⚠️ **IMPORTANTE**: Os exemplos a seguir são apenas referências ilustrativas do nível de sofisticação e rigor técnico esperado. O modelo deve:
+    > - Se inspirar na complexidade e profundidade técnica demonstrada
+    > - Criar diagramas originais adequados ao contexto específico
+    > - NÃO copiar estes exemplos diretamente
+    > - Adaptar o nível de complexidade ao conteúdo sendo analisado
+    > - Inserir diagramas APENAS quando agregarem valor real à compreensão
+    > - Manter o foco em visualizações matemáticas e estatísticas avançadas relevantes
+
+    ### 1. Decomposição de um Modelo Bayesiano Hierárquico
+
+    ```mermaid
+    graph TB
+        subgraph "Priori Hierárquica"
+            H["θ ~ π(θ|α)"] --> P["α ~ π(α)"]
+        end
+        
+        subgraph "Modelo de Verossimilhança"
+            L["L(X|θ) = Π p(x_i|θ)"] --> M["p(x|θ) = f(x; θ)"]
+        end
+        
+        subgraph "Posteriori"
+            B["p(θ|X) ∝ L(X|θ)π(θ|α)"] --> I["∫ p(θ|X)dθ"]
+        end
+        
+        H --> B
+        L --> B
+        style B fill:#f9f,stroke:#333,stroke-width:2px
+    ```
+
+    ### 2. Processo de Otimização em Espaço de Parâmetros
 
     ```mermaid
     graph LR
-      A["Modelo de VaR"] --> B("Mercado Financeiro");
-      B --> C["Perdas/Ganhos Observados"];
-      C --> A;
-      A --> D["Estimativa de Risco (VaR)"];
-      D --> B;
-      style A fill:#f9f,stroke:#333,stroke-width:2px
+        subgraph "Espaço Paramétrico Θ"
+            P1["θ_t"] -- "∇L(θ_t)" --> P2["θ_{t+1}"]
+            P2 -- "∇²L(θ_{t+1})" --> P3["θ_{t+2}"]
+        end
+        
+        subgraph "Regularização"
+            R1["R(θ) = ||θ||_p"] --> R2["λ∇R(θ)"]
+        end
+        
+        P1 --> R1
+        R2 --> P2
+        
+        style P3 fill:#ccf,stroke:#333,stroke-width:2px
     ```
 
-    ### 2. Processo de Decisão para Determinação de VaR (análogo a MDP)
+    ### 3. Decomposição Espectral do Risco Sistêmico
 
     ```mermaid
     graph LR
-      S1("Cenário de Mercado 's_1'") -- "Estratégia 'a_1'" --> S2("Cenário de Mercado 's_2'");
-      S2 -- "Estratégia 'a_2'" --> S3("Cenário de Mercado 's_3'");
-      S3 -- "Estratégia 'a_3'" --> S4("Cenário de Mercado 's_4'");
-      S4 -- "Estratégia 'a_4'" --> S1;
-      S1 -- "Estratégia 'a_5'" --> S3;
-      style S1 fill:#ccf,stroke:#333,stroke-width:2px
-      style S2 fill:#ccf,stroke:#333,stroke-width:2px
-      style S3 fill:#ccf,stroke:#333,stroke-width:2px
-      style S4 fill:#ccf,stroke:#333,stroke-width:2px
+        subgraph "Matriz de Covariância Σ"
+            E["Σ = QΛQ^T"] --> V["Q: Autovetores"]
+            E --> L["Λ: Autovalores"]
+        end
+        
+        subgraph "Componentes Principais"
+            P["PC_i = q_i^T R"] --> C["Var(PC_i) = λ_i"]
+            C --> R["ρ_i = λ_i/Σλ_i"]
+        end
+        
+        subgraph "Risco Sistêmico"
+            S["VaR_sys = √(w^T Σ w)"] --> M["CVaR_α(L)"]
+        end
+        
+        V --> P
+        L --> C
+        R --> S
+        style S fill:#aaf,stroke:#333,stroke-width:2px
     ```
 
-    ### 3. Diagrama da Decomposição de uma Métrica de Risc
+    ### 4. Arquitetura de Modelo de Precificação Multi-Fator
 
     ```mermaid
-    graph LR
-        A["VaR(s)"] --> B["min_estratégia"]
-        B --> C["Perdas Esperadas (L)"]
-        B --> D["+ Ajuste de Risco Futuro (γ * VaR(s'))"]
-        C --> E["Custo (ou Perda) Imediata"]
-        D --> F["Risco Futuro Descontado"]
-        style A fill:#aaf,stroke:#333,stroke-width:2px
+    graph TB
+        subgraph "Fatores de Risco"
+            F1["dS/S = μdt + σdW_t"]
+            F2["dr = κ(θ-r)dt + η√rdZ_t"]
+            F3["dσ = α(ν-σ)dt + ξσdB_t"]
+        end
+        
+        subgraph "Calibração"
+            C1["EMM Q-measure"]
+            C2["Martingale Pricing"]
+            C3["Risk Premium λ(t)"]
+        end
+        
+        subgraph "Pricing Kernel"
+            K["dM_t/M_t = -r_tdt - λ_tdW_t"]
+        end
+        
+        F1 --> C1
+        F2 --> C2
+        F3 --> C3
+        C1 --> K
+        C2 --> K
+        C3 --> K
+        
+        style K fill:#faa,stroke:#333,stroke-width:2px
     ```
 
-    ### 4. Diagrama de um Modelo
-
-    ```mermaid
-    graph LR
-        A["Estado de Mercado 's'"] --> B("Hedge (Decisor)");
-        B --> C["Estratégia 'a'"];
-        C --> D("Mercado Financeiro");
-        D --> E["Perdas/Ganhos 'r', Próximo Estado 's''"];
-        E --> F("Crítico de Risco");
-        F --> B;
-        style B fill:#faa,stroke:#333,stroke-width:2px
-        style F fill:#aaf,stroke:#333,stroke-width:2px
-    ```
-
-    ### 5. Sequência de Interação Modelo-Mercado 
+    ### 5. Processo de Calibração de Modelo de Volatilidade Estocástica
 
     ```mermaid
     sequenceDiagram
-        participant A as "Modelo de Risco"
-        participant E as "Mercado Financeiro"
+        participant M as "Modelo Heston"
+        participant K as "Kernel de Calibração"
+        participant O as "Dados de Opções"
         
-        loop Período de Análise
-            A->>E: "Estratégia (hedge, alocação)"
-            E->>A: "Novo Estado de Mercado (s_{t+1})"
-            E->>A: "Perdas/Ganhos (r_t)"
-            Note over A: "Atualiza Métricas de Risco e Recalibra VaR"
+        rect rgb(200, 220, 255)
+            Note over M,O: "Calibração via MCMC"
+            loop "Iterações MCMC"
+                M->>K: "P(θ|Data) ∝ L(Data|θ)π(θ)"
+                K->>O: "Preços Teóricos C(K,T;θ)"
+                O->>K: "Preços de Mercado C_mkt"
+                K->>M: "∇L(θ) e H(θ)"
+                M->>M: "θ_new = θ + H⁻¹∇L"
+            end
+        end
+        
+        rect rgb(255, 220, 200)
+            Note over M,K: "Diagnóstico"
+            K->>M: "Convergência MCMC"
+            M->>M: "Teste Geweke"
+            M->>M: "Análise de Autocorrelação"
         end
     ```
 
-    ### 6. Estados de Validação do Modelo VaR
+    ### 6. Estados do Sistema de Gestão de Risco
 
     ```mermaid
     stateDiagram-v2
-        [*] --> "Calibração do Modelo"
-        "Calibração do Modelo" --> "Calibração do Modelo": "Ajuste de Parâmetros"
-        "Calibração do Modelo" --> "Validação do VaR": "Métricas de Backtesting OK"
-        "Validação do VaR" --> "Calibração do Modelo": "Violações > Limite"
-        "Validação do VaR" --> "Produção": "Testes de Kupiec/Christoffersen OK"
-        "Produção" --> "Calibração do Modelo": "Falha no Stress Test"
-        "Produção" --> [*]: "Modelo em Conformidade"
+        [*] --> "Calibração"
+        state "Calibração" {
+            [*] --> "Estimação GMM"
+            "Estimação GMM" --> "Teste J-stat"
+            "Teste J-stat" --> "Estimação GMM": "p-valor < α"
+            "Teste J-stat" --> [*]: "p-valor ≥ α"
+        }
+        "Calibração" --> "Validação"
+        state "Validação" {
+            [*] --> "Backtesting VaR"
+            "Backtesting VaR" --> "Teste PIT"
+            "Teste PIT" --> "Análise Espectral"
+        }
+        "Validação" --> "Produção"
+        state "Produção" {
+            [*] --> "Monitoramento"
+            "Monitoramento" --> "Stress Test"
+            "Stress Test" --> "Ajuste Dinâmico"
+        }
+        "Produção" --> "Calibração": "Falha nos Testes"
     ```
 
     ## 7. Processo de Backtesting e Atualização do VaR
@@ -218,16 +308,22 @@ create_diagrams_task:
     - Foque em diagramas de arquitetura, relacionamentos sistêmicos, fluxos de execução e sequence diagrams, evitando estruturas de mind maps ou nós de decisão (losangos).
     - Sempre usar rótulos claros, colocando-os **entre aspas duplas** (" ").
     - Prefira diagramas que evidenciem relacionamentos, decomposições matemáticas, fluxos de execução e hierarquias teóricas.
+    - Posicione os diagramas estrategicamente no início de seções e na introdução de novos conceitos para estabelecer uma base visual sólida.
     - Utilize a sintaxe adequada do Mermaid (flowchart, sequence diagrams, classes, etc.).
     - **Nunca edite o texto original** – apenas insira diagramas de forma contextual, em pontos que auxiliam na compreensão do conteúdo.
+    - **Nunca interrompa** sequências de steps em provas matemáticas com diagramas.
     - Lembre-se de substituir ou inserir diagramas onde houver referências a imagens `<image: ...>` ou onde se considere que um diagrama vai melhorar a explicação.
-    - Caso vá adicionar um diagrama, ele deve ser:
-      - Curto, mas relevante.
-      - Claro e objetivo no que se propõe ilustrar.
-      - Utilizar " " para **todo** texto dentro do diagrama.
-      - Alinhar-se à formatação LaTeX e notação matemática já presente, se houver.
 
     ⚠️ Não modificar o texto original em momento algum; somente acrescente blocos de diagrama Mermaid caso realmente auxiliem no entendimento.
+
+    ### Observações Finais Sobre os Exemplos
+
+    Estes exemplos demonstram o nível de rigor matemático e sofisticação esperado, mas cada novo diagrama deve ser:
+    1. Original e específico para o contexto
+    2. Relevante para o conteúdo sendo analisado
+    3. Focado em esclarecer conceitos complexos
+    4. Adequado ao nível técnico do texto
+    5. Inserido apenas quando trouxer real valor adicional
 
   user_message: >
     Por favor, melhore este texto adicionando diagramas Mermaid apropriados.  

@@ -65,8 +65,8 @@ def process_section_topic(directory: Path, section_name: str, topic: str, pdf_fi
     if previous_topics:
         additional_context = "\n\nPrevious Topics:\n"
         for prev_topic, prev_content in previous_topics[-max_previous_topics:]:
-            additional_context += f"\n--- START {prev_topic} ---\n{prev_content}\n"
-            additional_context += f"--- END {prev_topic} ---"
+            additional_context += f"--- START {prev_topic} ---\n{prev_content}\n"
+            additional_context += f"--- END {prev_topic} ---\n"
     
     steps = [
         ChainStep(
