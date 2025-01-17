@@ -1,0 +1,86 @@
+{
+  "topics": [
+     {
+      "topic": "Assessing VAR Precision",
+      "sub_topics": [
+           "VAR estimates are affected by estimation error from sampling variability due to limited sample sizes, which affects the reported VAR numbers. VAR or any statistic θ is estimated from a fixed window of T days, which gives an estimate θ(x, T) that depends on the sample realizations and sample size, affecting the value of VAR. The reported statistic is only an estimate and is affected by sampling variability. Different choices of T lead to different VAR numbers.",
+           "The dispersion of values can be measured by the sampling distribution for parameter θ, used to generate confidence bands for VAR estimates.  The estimated mean û is distributed normally around the true mean: û ~ N(μ,σ²/T).  The standard error in the estimated mean converges toward 0 at a speed of 1/√T as T increases. Note that confidence level to define the confidence bands is different from the VAR confidence level."
+       ]
+    },
+     {
+      "topic": "The Problem of Measurement Errors",
+      "sub_topics":[
+        "Estimation error can be used to assess the precision of the reported VAR.  VAR, or any statistic θ, is estimated from a fixed window of T days, which gives an estimate θ(x,T) that depends on the sample realizations and sample size. The reported statistic is only an estimate of the true value and is affected by the variability of the sample. Different choices of T lead to different VAR numbers. A possible interpretation of estimates is that they represent samples from an underlying distribution with unknown parameters. With an infinite number of observations, the estimates would converge to the true values."
+      ]
+    },
+    {
+      "topic": "Estimation Errors in Means and Variances",
+      "sub_topics": [
+        "When the underlying distribution is normal, the sample mean μ is distributed normally around the true mean as: μ̂ ~ N(μ, σ²/T), where T is the number of independent observations. The standard error in the estimated mean converges towards 0 as the speed of √1/T as T increases. The following ratio for the estimated variance σ² has a chi-square distribution with (T-1) degrees of freedom: (T-1)σ̂²/σ² ~ χ²(T-1).",
+        "For large samples, the chi-square distribution converges to a normal distribution: σ̂² ~ N(σ⁴, 2σ⁴/ (T-1)). The standard error of the sample standard deviation, σ̂, is: SE(σ̂) = σ/√(2T).",
+        "Confidence bands for the point estimates of standard deviation are constructed by multiplying by SE by 1.96 (for a 95% level)."
+      ]
+    },
+    {
+      "topic": "Estimation Error in Sample Quantiles",
+      "sub_topics": [
+        "For arbitrary distributions, the cth quantile is given by q̂(c), where the asymptotic standard error is: SE(q̂) = √[c(1-c) / (T f(q)²)], where T is the sample size and f(q) is the probability distribution function evaluated at quantile q. Sample quantiles are increasingly unreliable as one moves farther in the left tail, and VAR measures with high confidence levels should be interpreted with caution. Estimation error is higher in the tails due to fewer observations being used. Bootstrapping involves resampling to measure the standard error, generating a distribution of sample quantiles to assess precision in original estimates.",
+          "Estimation error is illustrated with a normal distribution showing confidence bands plotted for quantiles from normal distribution. The estimation error in the ETL is substantially larger than in VAR, especially in high confidence levels and thinner tails."
+      ]
+    },
+    {
+      "topic": "Comparison of Methods",
+      "sub_topics": [
+        "There are two methods for measuring VAR: by reading the quantile directly from the distribution (q̂) and by calculating the standard deviation and scaling by the appropriate factor (ασ̂).  The parametric (ασ̂) method is more precise, as it utilizes information about the whole distribution, whereas the quantile-based (q̂) method uses the ranking of observations and the two observations around the estimated value. For the normal distribution, the transformation from σ̂ to quantile with α is precise. Parametric methods are more precise because they use more sample information (from all deviations instead of just one quantile).",
+         "The σ-based method leads to substantial efficiency gains relative to the sample quantile. For a VAR at 95% confidence level, with a sample quantile,  the interval is [1.38, 1.91]. For αô, it’s reduced to [1.50, 1.78]. Parametric methods are inherently more precise, with the difficulty lying in choosing the proper distribution. Confidence bands show that there is substantial estimation error in estimated quantiles, especially for high confidence levels."
+      ]
+    },
+    {
+      "topic": "Extreme-Value Theory",
+      "sub_topics": [
+        "Extreme-value theory (EVT) extends the central limit theorem for the distribution of tails, applicable for fitting distributions tails (but inaccurate for the distribution's center), hence it is called semiparametric. The celebrated EVT theorem specifies the shape of the cumulative distribution function (cdf) for the value x beyond a cutoff point u. Under general conditions, the cdf belongs to: F(y) = 1 - (1 + ξy)^(-1/ξ) if ξ≠0, or F(y) = 1- exp(-y) if ξ=0, where y=(x-u)/β , β > 0 is a scale parameter, and ξ is a shape parameter.",
+         "The distribution is defined as the generalized Pareto distribution (GPD) and subsumes other distributions including normal and Pareto as special cases. Normal distribution corresponds to ξ = 0 (tails disappear at exponential speed). For financial data, ξ > 0 represents heavy tails. Typical estimates for stock market data are between 0.2 and 0.4, where this coefficient can be related to the student t distribution where the degrees of freedom, approximately n = 1/ξ. Heavy-tailed distributions can have incomplete set of moments and infinite variance.",
+         "EVT has been used in fields like reliability, reinsurance, hydrology, and environmental science to assess catastrophic events.  After the collapse of sea-protection locks in the Netherlands, the Dutch government created a committee that used EVT tools to establish the needed heights of the locks.  The objective is to balance the costs of construction with the expected cost of a catastrophic flood. The dike system was built to withstand a storm that occurs every 1250 years. The flood protection systems in the United States are designed to withstand events that would occur every 30 to 100 years."
+      ]
+    },
+      {
+        "topic":"The EVT Distribution",
+         "sub_topics":[
+           "The shape of the cumulative distribution function (cdf) for the value x beyond a cutoff point u belongs to the generalized Pareto distribution (GPD) family.",
+             "The generalized Pareto distribution (GPD) includes other known distributions, like the Pareto and normal, where ξ=0 means a normal distribution and the tails disappear exponentially.",
+             "For financial data, ξ>0 implies heavy tails or a tail that disappears more slowly than normal. Typical estimates are between 0.2 to 0.4 for stock market data. The coefficient can be related to the student t, which degrees of freedom around 3 to 6.",
+            "Heavy-tailed distributions might not have a complete set of moments, unlike normal distributions. For instance, with ξ=0.5, the distribution has infinite variance (like the student t with 2 degrees of freedom)."
+          ]
+      },
+    {
+      "topic": "Quantiles and ETL",
+      "sub_topics": [
+          "The EVT distribution provides a parametric distribution of tails beyond a cutoff point u. Using actual data computes the ratio of observations in the tail beyond u (Nu/N) to ensure the tail probability sums to unity. Tail distribution and density functions are given by: F(x)=1-(Nu/N)(1+(ξ/β)*(x-u))^(-1/ξ) and f(x)=(Nu/N)(ξ/β)(1+(ξ/β)*(x-u))^(-(1/ξ)-1). The quantile at the cth level is obtained by setting the distribution to F(y) = c and solving for x, which yields VAR = u + (β/ξ)*([(N/Nu)(1-c)]^(-ξ) - 1)",
+          "The expected tail loss (ETL) is given by ETL = (VAR/(1-ξ)) + (β/(1-ξ)) - (ξu/(1-ξ)). This provides a quantile estimator based on knowledge of the parametric distribution of the tails, with a lower estimation error than the ordinary sample quantile. Parameters β and ξ can be estimated by maximizing the likelihood function."
+      ]
+    },
+    {
+      "topic": "Time Aggregation",
+      "sub_topics": [
+        "For normal distribution 10-day returns scale is adjusted by the square root of time (T^0.5). EVT distributions are stable under addition and retain same tail parameter for longer periods. Scaling parameter increases at an approximate rate of T^ξ, which is slower than T^0.5.  The fat-tail effect is offset by time aggregation, which means that the 10-day EVT-VAR is lower than 10-day normal distribution.",
+         "Because extreme values are more rare they aggregate at a slower rate than normal distribution. For longer time horizons, the usual Basel square-root-of-time scaling factor might be sufficient. EVT has limitations: it is univariate, therefore, it cannot be used to determine joint distributions. Also, it does not characterize drivers of potential losses when it is applied to total institutional revenue."
+      ]
+    },
+     {
+        "topic":"EVT Evaluation",
+         "sub_topics":[
+           "The EVT approach is useful for estimating tail probabilities of extreme events and is applicable at higher confidence levels where the normal distribution generally underestimates potential losses. Empirical distributions lack data in the tails. EVT helps draw smooth curves through the extreme tails based on statistical theory.",
+           "The student t distribution with 4 to 6 degrees of freedom is a simple distribution adequate for most financial data. Fitting EVT functions to recent historical data is filled with the same pitfalls as VAR. Powerful statistical techniques do not reveal once-in-a-lifetime events, and therefore those methods need to be complemented by stress testing."
+         ]
+     },
+     {
+      "topic": "Conclusions",
+      "sub_topics": [
+        "This chapter explored two methodologies for measuring VAR: the empirical approach, based on the empirical distribution and its sample quantile, and the parametric approach, which uses a parametric distribution such as the normal one and uses the standard deviation. Parametric methods are easier to use and produce more precise estimates, but they may not approximate well the actual distribution of profits and losses.",
+        "It is necessary to be aware of the effect of sampling variation or imprecision in the VAR number when using empirical quantiles to measure the VAR. When VAR is used as a benchmark of risk, the choice of confidence level and horizon is arbitrary, but consistency is critical. When it is used for equity capital decisions, this choice is critical and can be guided by the default rate of a given credit rating.",
+        "VAR does not describe the extent of losses beyond the VAR and the average losses that exceed VAR. In that sense, ETL has several advantages over VAR, although no institution uses it at the aggregate level. VAR is recognized as a measure of loss under ‘normal market conditions’. If the users are concerned about extreme market conditions, then the Extreme Value Theory can be used to extrapolate recent data.",
+          "The use of historical data has limitations since it may not include extreme but plausible scenarios, which explains why institutions complement VAR methods with stress testing. The chapter also addressed alternative measures of risk, including the Expected Tail Loss (ETL) and concludes that VAR does not capture all the features of risk, mainly due to the normality assumption in parametric approaches and that the use of stress tests are necessary to complement the VAR approach."
+      ]
+    }
+  ]
+}
