@@ -57,7 +57,8 @@ def process_directory(directory: Path, processor: TaskProcessor, tasks_config: d
                     name=f"Generate Topics Set {i+1}",
                     tasks=["create_topics"],
                     input_files=pdf_files,
-                    expect_json=True
+                    expect_json=True,
+                    max_iterations=3
                 )
             ]
             
@@ -77,7 +78,8 @@ def process_directory(directory: Path, processor: TaskProcessor, tasks_config: d
             ChainStep(
                 name="Merge Topics",
                 tasks=["merge_topics"],
-                expect_json=True
+                expect_json=True,
+                max_iterations=5
             )
         ]
         

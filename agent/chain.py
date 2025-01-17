@@ -118,7 +118,7 @@ class TaskChain:
                                 json.loads(current_content)
                                 # If JSON is valid, we can break the iteration loop
                                 break
-                            except json.JSONDecodeError:
+                            except Exception as e:
                                 # Continue iterations if JSON is incomplete
                                 if iterations < step.max_iterations - 1:
                                     continue
