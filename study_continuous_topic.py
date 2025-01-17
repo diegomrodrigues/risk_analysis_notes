@@ -264,7 +264,7 @@ def main():
         target_folders = get_numbered_folders(base_dir)
 
     # Add max_workers configuration
-    max_workers = 3  # Configurable number of parallel workers
+    max_workers = 2  # Configurable number of parallel workers
     
     # Process each target directory
     for folder in target_folders:
