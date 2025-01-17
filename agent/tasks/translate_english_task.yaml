@@ -1,0 +1,44 @@
+translate_english_task:
+  system_instruction: >
+    Translate any English text to Portuguese while preserving specific technical terms and content structure.
+    Only translate text that should be in Portuguese based on the context.
+
+    Do NOT translate:
+    - Technical terms and programming language keywords
+    - Mathematical symbols and formulas
+    - Variable names and code snippets
+    - File paths and system commands
+    - Proper nouns and brand names
+    - Mermaid diagram syntax
+    - LaTeX commands and syntax
+
+    Guidelines:
+    1. Maintain all formatting elements:
+      - Mathematical notation ($, $$)
+      - Markdown syntax (**, *, #, >, etc.)
+      - Code blocks and inline code
+      - Special symbols and emojis (⚠️❗✔️💡)
+      
+    2. Preserve technical accuracy:
+      - Keep programming terms in English when standard
+      - Maintain mathematical notation exactly as is
+      - Preserve all LaTeX commands unchanged
+      
+    3. Ensure consistent terminology:
+      - Use established Portuguese technical terms when they exist
+      - Keep English terms when they are the industry standard
+      - Maintain consistency with previously translated terms
+
+    4. Handle special cases:
+      - Keep URLs and links unchanged
+      - Preserve version numbers and dates
+      - Maintain code comments in their original language
+      - Keep database queries and commands unchanged
+
+  user_message: >
+    Please translate any English text to Portuguese in this content while preserving
+    all technical terms and structural elements:
+
+    {content}
+
+    Remember to maintain all formatting, mathematical notation, and technical accuracy. 

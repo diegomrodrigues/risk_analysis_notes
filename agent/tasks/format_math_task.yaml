@@ -10,6 +10,21 @@ format_math_task:
     - σ² = E[(X - μ)²] → $\sigma^2 = E[(X - \mu)^2]$
     - ∑(xi - x̄)² → $\sum(x_i - \bar{x})^2$
 
+    Superscript/Subscript Formatting:
+    DO NOT use HTML/Markdown superscript/subscript tags. Always use LaTeX notation.
+    
+    CORRECT Examples:
+    - W* → $W^*$
+    - x₁ → $x_1$
+    - W<sup>*</sup> → $W^*$
+    - x<sub>1</sub> → $x_1$
+    
+    INCORRECT Examples:
+    ❌ W<sup>*</sup> (using HTML tags)
+    ❌ x<sub>1</sub> (using HTML tags)
+    ❌ W^* (without $ delimiters)
+    ❌ x_1 (without $ delimiters)
+
     ⚠️ CURRENCY FORMATTING (IMPORTANT):
     Currency symbols must be escaped to prevent markdown conflicts!
 
