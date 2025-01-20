@@ -84,6 +84,7 @@ class TaskChain:
         current_content = content
         iterations = 0
         last_chunk_size = len(current_content)  # Track size of last chunk
+        should_stop = False
         
         while iterations < step.max_iterations:
             for task_name in step.tasks:
@@ -123,14 +124,14 @@ class TaskChain:
                         if step.expect_json:
                             try:
                                 json.loads(current_content)
-                                # If JSON is valid, we can break the iteration loop
-                                break
-                            except Exception as e:
-                                # Continue iterations if JSON is incomplete
-                                if iterations < step.max_iterations - 1:
-                                    continue
-                                else:
+                                # If JSON is valid, we can stop iterating
+                                should_stop = True
+                            except json.JSONDecodeError:
+                                # Continue if JSON is incomplete and we haven't hit max iterations
+                                if iterations >= step.max_iterations - 1:
                                     raise Exception("❌ Failed to get complete JSON response after max iterations")
+                                # Otherwise, continue to next iteration
+                                break  # Break the task loop to start a new iteration
 
                     else:
                         print(f"❌ Step failed at task: {task_name}")
@@ -146,7 +147,10 @@ class TaskChain:
             # Only continue if we have a stop pattern and haven't reached it
             if not step.stop_at:
                 break
-                
+
+            if should_stop:
+                break
+
             iterations += 1
             if iterations == step.max_iterations:
                 print(f"⚠️ Reached maximum iterations ({step.max_iterations}) without finding stop pattern")
