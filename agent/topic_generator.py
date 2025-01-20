@@ -1,0 +1,126 @@
+from pathlib import Path
+from typing import List, Optional
+from .chain import TaskChain, ChainStep
+from .processor import TaskProcessor
+import json
+
+class TopicGenerator:
+    """Handles the generation and merging of topics for a directory."""
+    
+    def __init__(self, processor: TaskProcessor, tasks_config: dict):
+        self.processor = processor
+        self.tasks_config = tasks_config
+
+    def generate(self, directory: Path, perspectives: List[str], num_topics: Optional[int] = None) -> str:
+        """Generate topics.json for a directory using multiple perspectives."""
+        if perspectives is None or num_topics is None:
+            raise ValueError("You should provide either perspectives or num_topics")
+
+        if perspectives is not None:
+            num_topics = len(perspectives)
+        
+        pdf_files = self._get_pdf_files(directory)
+        if not pdf_files:
+            raise ValueError("No PDF files found in the directory")
+
+        perspective_results = self._generate_perspective_topics(pdf_files, perspectives, num_topics)
+        final_result = self._merge_final_topics(perspective_results)
+        
+        self._save_topics(directory, final_result)
+        return final_result
+
+    def _get_pdf_files(self, directory: Path) -> List[Path]:
+        """Get all PDF files in the directory."""
+        return list(directory.glob("*.pdf"))
+
+    def _generate_perspective_topics(self, pdf_files: List[Path], 
+                                   perspectives: List[str], num_topics: int) -> List[str]:
+        """Generate topics for each perspective."""
+        perspective_results = []
+        
+        for i, perspective in enumerate(perspectives):
+            print(f"\nGenerating topics for perspective {i+1}/{num_topics}")
+            perspective_jsons = self._generate_perspective_set(pdf_files, perspective, i)
+            merged_perspective = self._merge_perspective_set(perspective_jsons, i)
+            perspective_results.append(merged_perspective)
+            
+        return perspective_results
+
+    def _generate_perspective_set(self, pdf_files: List[Path], 
+                                perspective: str, perspective_index: int) -> List[str]:
+        """Generate multiple sets of topics for a single perspective."""
+        perspective_jsons = []
+        
+        for j in range(3):  # Generate 3 JSONs per perspective
+            topics_chain = TaskChain(self.processor, self.tasks_config, [
+                ChainStep(
+                    name=f"Generate Topics Set {j+1} for Perspective {perspective_index+1}",
+                    tasks=["create_topics"],
+                    input_files=pdf_files,
+                    expect_json=True,
+                    max_iterations=3
+                )
+            ])
+            
+            result = topics_chain.run(perspective)
+            if not result:
+                raise Exception(f"Failed to generate topics set {j+1} for perspective {perspective_index+1}")
+            perspective_jsons.append(result)
+            
+        return perspective_jsons
+
+    def _merge_perspective_set(self, perspective_jsons: List[str], perspective_index: int) -> str:
+        """Merge multiple topic sets for a single perspective by combining their content."""
+        # Parse all JSONs
+        parsed_jsons = [json.loads(json_str) for json_str in perspective_jsons]
+        
+        # Merge the topics using the helper method
+        merged_result = self._merge_topic_contents(parsed_jsons)
+        
+        return json.dumps(merged_result, indent=2)
+
+    def _merge_final_topics(self, perspective_results: List[str]) -> str:
+        """Merge all perspective results by combining their content."""
+        # Parse all JSONs
+        parsed_jsons = [json.loads(result) for result in perspective_results]
+        
+        # Merge the topics using the helper method
+        merged_result = self._merge_topic_contents(parsed_jsons)
+        
+        return json.dumps(merged_result, indent=2)
+
+    def _merge_topic_contents(self, json_list: List[dict]) -> dict:
+        """Merge multiple topic JSONs by combining topics and their sub-topics."""
+        topic_map = {}
+        
+        # Process each JSON document
+        for json_doc in json_list:
+            for topic_item in json_doc.get('topics', []):
+                topic = topic_item['topic']
+                sub_topics = set(topic_item.get('sub_topics', []))
+                
+                if topic in topic_map:
+                    # Merge sub-topics for existing topic
+                    topic_map[topic].update(sub_topics)
+                else:
+                    # Create new topic entry
+                    topic_map[topic] = sub_topics
+        
+        # Convert back to the required format
+        merged_result = {
+            "topics": [
+                {
+                    "topic": topic,
+                    "sub_topics": sorted(list(sub_topics))
+                }
+                for topic, sub_topics in topic_map.items()
+            ]
+        }
+        
+        return merged_result
+
+    def _save_topics(self, directory: Path, content: str) -> None:
+        """Save the generated topics to a file."""
+        output_file = directory / "topics.json"
+        output_file.write_text(content, encoding='utf-8')
+        print(f"✔️ Topics generated and saved to: {output_file}") 
