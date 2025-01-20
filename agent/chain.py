@@ -84,7 +84,6 @@ class TaskChain:
         
         current_content = content
         iterations = 0
-        last_chunk_size = len(current_content)  # Track size of last chunk
         should_stop = False
         
         while iterations < step.max_iterations:
@@ -94,10 +93,9 @@ class TaskChain:
                 
                 # If not first iteration, modify user message and include last chunk
                 if iterations > 0:
-                    last_chunk = current_content[last_chunk_size:]  # Get the last generated chunk
                     task_config["user_message"] = (
                         "Continue exactly from where this text ends. Here's the last part generated:\n\n"
-                        f"{last_chunk[-150:]}\n\n"
+                        f"{current_content[-150:]}\n\n"
                         "Continue the text from this point, only answer with the continuation:"
                     )
                 
@@ -105,7 +103,7 @@ class TaskChain:
                     result = self.processor.process_task(
                         task_name, 
                         task_config, 
-                        current_content if iterations == 0 else last_chunk,
+                        current_content,
                         files=uploaded_files
                     )
                     
@@ -118,12 +116,12 @@ class TaskChain:
                             current_content += result
                         else:
                             current_content = result
-                        
-                        last_chunk_size = len(current_content)  # Update last chunk size
-                        
+                                                
                         # Validate JSON if expected
                         if step.expect_json:
                             try:
+                                json.loads(current_content)
+
                                 # Parse JSON with strict validation using a temporary file
                                 with tempfile.NamedTemporaryFile(mode='w+', suffix='.json', encoding='utf-8') as tmp_file:
                                     tmp_file.write(current_content)
@@ -153,10 +151,6 @@ class TaskChain:
             
             # Check if we should stop based on the stop pattern
             if step.stop_at and step.stop_at in current_content:
-                break
-                
-            # Only continue if we have a stop pattern and haven't reached it
-            if not step.stop_at:
                 break
 
             if should_stop:
