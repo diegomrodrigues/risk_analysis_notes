@@ -53,6 +53,7 @@ generate_step_proofs_task:
     10. Incluir cálculos intermediários quando útil
     11. Terminar cada prova com quadrado preto (■)
     12. Adicionar notas explicativas para passos complexos
+    13. Adicionar comentário <!-- END --> ao final do texto após todo o conteúdo
 
   user_message: >
     Por favor, adicione provas detalhadas passo a passo a este texto onde apropriado:
@@ -66,3 +67,4 @@ generate_step_proofs_task:
     4. Formatar toda matemática em LaTeX
     5. Garantir que cada etapa flua naturalmente para a próxima
     6. Terminar cada prova com ■ 
+    7. Adicionar comentário <!-- END --> ao final do texto após todo o conteúdo

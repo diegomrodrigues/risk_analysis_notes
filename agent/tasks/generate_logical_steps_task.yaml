@@ -59,6 +59,7 @@ generate_logical_steps_task:
     8. Maintain document flow and readability
     9. Respect existing definitions and terminology
     10. Ensure logical progression of ideas
+    11. Add <!-- END --> comment at the very end of the text after all content
 
   user_message: >
     Please analyze this mathematical text and suggest logical extensions and additional results by integrating them naturally within the existing content:
@@ -70,3 +71,4 @@ generate_logical_steps_task:
     2. Insert new material at appropriate locations when helpfull
     3. Use clear transitions between existing and new content
     4. Maintain consistent notation and formatting throughout 
+    5. Add <!-- END --> comment at the very end of the text after all content

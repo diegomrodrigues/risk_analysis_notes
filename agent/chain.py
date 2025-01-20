@@ -83,35 +83,42 @@ class TaskChain:
         
         current_content = content
         iterations = 0
+        last_chunk_size = len(current_content)  # Track size of last chunk
         
         while iterations < step.max_iterations:
             for task_name in step.tasks:
                 print(f"\n→ Executing task ({iterations + 1}/{step.max_iterations}): {task_name}")
                 task_config = self.tasks_config[task_name].copy()
                 
-                # Add JSON response type if step expects JSON
-                if step.expect_json:
-                    task_config["response_mime_type"] = "application/json"
-                
-                # If not first iteration, modify user message to continue
+                # If not first iteration, modify user message and include last chunk
                 if iterations > 0:
-                    task_config["user_message"] = "Continue exactly from where you stopped precisely without rewriting previous content"
+                    last_chunk = current_content[last_chunk_size:]  # Get the last generated chunk
+                    task_config["user_message"] = (
+                        "Continue exactly from where this text ends. Here's the last part generated:\n\n"
+                        f"{last_chunk[-150:]}\n\n"
+                        "Continue the text from this point, only answer with the continuation:"
+                    )
                 
                 try:
                     result = self.processor.process_task(
                         task_name, 
                         task_config, 
-                        current_content,
+                        current_content if iterations == 0 else last_chunk,
                         files=uploaded_files
                     )
                     
                     if result:
                         if iterations > 0:
-                            # Append new content for continuations
+                            # Check for duplicated content
+                            overlap = self._find_overlap(current_content, result)
+                            if overlap > 0:
+                                result = result[overlap:]
                             current_content += result
                         else:
                             current_content = result
-
+                        
+                        last_chunk_size = len(current_content)  # Update last chunk size
+                        
                         # Validate JSON if expected
                         if step.expect_json:
                             try:
@@ -150,6 +157,16 @@ class TaskChain:
         
         print(f"✓ Completed step: {step.name}")
         return current_content
+    
+    def _find_overlap(self, original: str, new_text: str, min_overlap: int = 20) -> int:
+        """Find the overlap between the end of original text and start of new text."""
+        original_end = original[-200:]  # Look at last 200 chars of original
+        
+        # Try different overlap sizes, from largest to smallest
+        for i in range(len(original_end), min_overlap - 1, -1):
+            if original_end[-i:] == new_text[:i]:
+                return i
+        return 0
     
     def run(self, initial_content: str) -> Optional[str]:
         """Run all steps in the chain sequentially."""

@@ -57,6 +57,7 @@ generate_examples_task:
     8. Compare different methods when relevant
     9. Use clear variable naming conventions
     10. Add error analysis and statistical tests
+    11. Add <!-- END --> comment at the very end of the text after all content
 
   user_message: >
     Please add practical numerical examples to this text where appropriate:
@@ -68,3 +69,4 @@ generate_examples_task:
     2. Add examples only where they enhance understanding
     3. Use the specified format with 💡
     4. Keep all mathematical notation and references intact
+    5. Add <!-- END --> comment at the very end of the text after all content

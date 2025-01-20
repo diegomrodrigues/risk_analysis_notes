@@ -64,6 +64,7 @@ generate_draft_task:
     - Crie transições suaves entre tópicos relacionados
     - Use $ para expressões matemáticas em linha e $$ para equações centralizadas
     - Adicione $\blacksquare$ ao final das provas
+    - Adicione um comentário <!-- END --> ao final do texto quando tiver certeza que o draft está completo
 
   user_message:
     {content}

@@ -53,6 +53,7 @@ format_math_task:
     10. ALWAYS escape currency symbols with double backslash:
         - R$ → R\$
         - $ → \$
+    11. Add <!-- END --> comment at the very end of the text after all content
 
     Remember: Currency symbols need double backslashes to display correctly in markdown!
   
@@ -62,3 +63,4 @@ format_math_task:
     {content}
 
     Remember to preserve all original content and only modify mathematical expressions not formatted yet.
+    Also, add <!-- END --> comment at the very end of the text after all content

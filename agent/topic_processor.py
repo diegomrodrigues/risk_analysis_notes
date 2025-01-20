@@ -75,7 +75,7 @@ class TopicProcessor:
                 name="Generate Initial Draft",
                 tasks=["generate_draft_task"],
                 input_files=pdf_files,
-                stop_at="# Conclusão",
+                stop_at="<!-- END -->",
                 max_iterations=3,
                 additional_context=additional_context
             ),
@@ -89,10 +89,9 @@ class TopicProcessor:
                     "generate_step_proofs_task",
                     "generate_examples_task",
                     "format_math_task",
-                    "translate_english_task",
                     "cleanup_task"
                 ],
-                stop_at="# Conclusão",
+                stop_at="<!-- END -->",
                 max_iterations=3
             )
         ]
