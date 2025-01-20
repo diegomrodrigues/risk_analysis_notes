@@ -123,8 +123,16 @@ class TaskChain:
                         # Validate JSON if expected
                         if step.expect_json:
                             try:
-                                json.loads(current_content)
-                                # If JSON is valid, we can stop iterating
+                                # Parse JSON with strict validation
+                                parsed_json = json.loads(current_content)
+                                # Additional validation checks
+                                if not isinstance(parsed_json, (dict, list)):
+                                    raise json.JSONDecodeError("JSON must be an object or array", current_content, 0)
+                                # Verify the JSON can be serialized back without loss
+                                reserialized = json.dumps(parsed_json)
+                                if json.loads(reserialized) != parsed_json:
+                                    raise json.JSONDecodeError("JSON reserialize check failed", current_content, 0)
+                                # If JSON is valid and well-formed, we can stop iterating
                                 should_stop = True
                             except json.JSONDecodeError:
                                 # Continue if JSON is incomplete and we haven't hit max iterations
