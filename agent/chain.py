@@ -91,12 +91,15 @@ class TaskChain:
                 print(f"\n→ Executing task ({iterations + 1}/{step.max_iterations}): {task_name}")
                 task_config = self.tasks_config[task_name].copy()
                 
-                # If not first iteration, modify user message and include last chunk
+                # Modified continuation logic
                 if iterations > 0:
+                    # Take the last complete sentence or JSON structure
+                    last_chunk = self._get_last_chunk(current_content)
                     task_config["user_message"] = (
-                        "Continue exactly from where this text ends. Here's the last part generated:\n\n"
-                        f"{current_content[-150:]}\n\n"
-                        "Continue the text from this point, only answer with the continuation:"
+                        "Continue exactly from where this text ends. "
+                        "Do not repeat any previous content. Here's the last part:\n\n"
+                        f"{last_chunk}\n\n"
+                        "Continue the text from this point, providing only new content:"
                     )
                 
                 try:
@@ -109,14 +112,16 @@ class TaskChain:
                     
                     if result:
                         if iterations > 0:
-                            # Check for duplicated content
+                            # Enhanced overlap detection
                             overlap = self._find_overlap(current_content, result)
                             if overlap > 0:
                                 result = result[overlap:]
+                            if not result.strip():  # If no new content after removing overlap
+                                break
                             current_content += result
                         else:
                             current_content = result
-                                                
+                        
                         # Validate JSON if expected
                         if step.expect_json:
                             try:
@@ -153,7 +158,10 @@ class TaskChain:
             if step.stop_at and step.stop_at in current_content:
                 break
 
-            if should_stop:
+            if not step.stop_at and not step.expect_json:
+                break
+
+            if step.expect_json and should_stop:
                 break
 
             iterations += 1
@@ -167,14 +175,25 @@ class TaskChain:
         print(f"✓ Completed step: {step.name}")
         return current_content
     
+    def _get_last_chunk(self, text: str, chunk_size: int = 200) -> str:
+        """Get the last meaningful chunk of text (complete sentence or JSON structure)."""
+        if not text:
+            return ""        
+        text_chunk = text[-chunk_size:]
+        return text_chunk
+
     def _find_overlap(self, original: str, new_text: str, min_overlap: int = 20) -> int:
-        """Find the overlap between the end of original text and start of new text."""
-        original_end = original[-200:]  # Look at last 200 chars of original
+        """Enhanced overlap detection between original and new text."""
+        if not original or not new_text:
+            return 0
+            
+        original_end = original[-500:]  # Look at last 500 chars of original
         
         # Try different overlap sizes, from largest to smallest
         for i in range(len(original_end), min_overlap - 1, -1):
-            if original_end[-i:] == new_text[:i]:
+            if original_end[-i:].lower() == new_text[:i].lower():  # Case-insensitive comparison
                 return i
+                    
         return 0
     
     def run(self, initial_content: str) -> Optional[str]:
