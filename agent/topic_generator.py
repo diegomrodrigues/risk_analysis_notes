@@ -11,9 +11,9 @@ class TopicGenerator:
         self.processor = processor
         self.tasks_config = tasks_config
 
-    def generate(self, directory: Path, perspectives: List[str], num_topics: Optional[int] = None) -> str:
+    def generate(self, directory: Path, perspectives: Optional[List[str]] = None, num_topics: Optional[int] = None) -> str:
         """Generate topics.json for a directory using multiple perspectives."""
-        if perspectives is None or num_topics is None:
+        if perspectives is None and num_topics is None:
             raise ValueError("You should provide either perspectives or num_topics")
 
         if perspectives is not None:
@@ -26,8 +26,22 @@ class TopicGenerator:
         perspective_results = self._generate_perspective_topics(pdf_files, perspectives, num_topics)
         final_result = self._merge_final_topics(perspective_results)
         
-        self._save_topics(directory, final_result)
-        return final_result
+        # Add restructuring step
+        restructure_chain = TaskChain(self.processor, self.tasks_config, [
+            ChainStep(
+                name="Restructure Topics",
+                tasks=["restructure_topics"],
+                expect_json=True,
+                max_iterations=5
+            )
+        ])
+        
+        restructured_result = restructure_chain.run(final_result)
+        if not restructured_result:
+            raise Exception("Failed to restructure topics")
+        
+        self._save_topics(directory, restructured_result)
+        return restructured_result
 
     def _get_pdf_files(self, directory: Path) -> List[Path]:
         """Get all PDF files in the directory."""
@@ -77,7 +91,8 @@ class TopicGenerator:
         # Merge the topics using the helper method
         merged_result = self._merge_topic_contents(parsed_jsons)
         
-        return json.dumps(merged_result, indent=2)
+        # Ensure proper encoding of special characters
+        return json.dumps(merged_result, indent=2, ensure_ascii=False)
 
     def _merge_final_topics(self, perspective_results: List[str]) -> str:
         """Merge all perspective results by combining their content."""
@@ -87,7 +102,8 @@ class TopicGenerator:
         # Merge the topics using the helper method
         merged_result = self._merge_topic_contents(parsed_jsons)
         
-        return json.dumps(merged_result, indent=2)
+        # Ensure proper encoding of special characters
+        return json.dumps(merged_result, indent=2, ensure_ascii=False)
 
     def _merge_topic_contents(self, json_list: List[dict]) -> dict:
         """Merge multiple topic JSONs by combining topics and their sub-topics."""
