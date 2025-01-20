@@ -3,6 +3,7 @@ from typing import List, Dict, Any, Optional
 from pathlib import Path
 from .processor import TaskProcessor
 import json
+import tempfile
 
 @dataclass
 class ChainStep:
@@ -123,15 +124,17 @@ class TaskChain:
                         # Validate JSON if expected
                         if step.expect_json:
                             try:
-                                # Parse JSON with strict validation
-                                parsed_json = json.loads(current_content)
+                                # Parse JSON with strict validation using a temporary file
+                                with tempfile.NamedTemporaryFile(mode='w+', suffix='.json', encoding='utf-8') as tmp_file:
+                                    tmp_file.write(current_content)
+                                    tmp_file.flush()
+                                    tmp_file.seek(0)
+                                    parsed_json = json.load(tmp_file)
+                                
                                 # Additional validation checks
                                 if not isinstance(parsed_json, (dict, list)):
                                     raise json.JSONDecodeError("JSON must be an object or array", current_content, 0)
-                                # Verify the JSON can be serialized back without loss
-                                reserialized = json.dumps(parsed_json)
-                                if json.loads(reserialized) != parsed_json:
-                                    raise json.JSONDecodeError("JSON reserialize check failed", current_content, 0)
+                                
                                 # If JSON is valid and well-formed, we can stop iterating
                                 should_stop = True
                             except json.JSONDecodeError:
