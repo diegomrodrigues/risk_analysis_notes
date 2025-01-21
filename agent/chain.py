@@ -97,7 +97,7 @@ class TaskChain:
                         task_config["user_message"] = (
                             "Continue completing this JSON structure. Here's the partial JSON:\n\n"
                             f"{current_content}\n\n"
-                            "Complete the JSON structure, ensuring it's valid. "
+                            "Complete the JSON structure, ensuring it's valid.\n"
                             "Do not repeat any previous content, only provide the missing parts."
                         )
                 elif iterations > 0:

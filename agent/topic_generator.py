@@ -6,59 +6,33 @@ import json
 import re
 
 class TopicGenerator:
-    """Handles the generation and merging of topics for a directory."""
+    """Generates and manages topic hierarchies from PDF documents."""
     
     def __init__(self, processor: TaskProcessor, tasks_config: dict):
         self.processor = processor
         self.tasks_config = tasks_config
 
-    def generate(self, directory: Path, perspectives: Optional[List[str]] = None, num_topics: Optional[int] = None) -> str:
-        """Generate topics.json for a directory using multiple perspectives."""
-        if perspectives is None and num_topics is None:
-            raise ValueError("You should provide either perspectives or num_topics")
-
-        if perspectives is not None:
-            num_topics = len(perspectives)
-        
+    def generate(self, directory: Path, perspectives: Optional[List[str]] = None, 
+                num_topics: Optional[int] = None) -> str:
+        """Generate a topics.json file from PDF documents in the directory."""
+        self._validate_input(perspectives, num_topics)
         pdf_files = self._get_pdf_files(directory)
-        if not pdf_files:
-            raise ValueError("No PDF files found in the directory")
-
-        perspective_results = self._generate_perspective_topics(pdf_files, perspectives, num_topics)
-        final_result = self._merge_final_topics(perspective_results)
         
-        # Get existing directory names without numbers
-        existing_dirs = [
-            re.sub(r'^\d+\.\s*', '', d.name)
-            for d in directory.iterdir() 
-            if d.is_dir()
-        ]
-        existing_dirs_context = json.dumps({"existing_directories": existing_dirs})
+        # Generate topics from different perspectives
+        num_perspectives = len(perspectives) if perspectives else num_topics
+        perspective_results = self._generate_perspective_topics(pdf_files, perspectives, num_perspectives)
         
-        # Add restructuring step with existing directories context
-        restructure_chain = TaskChain(self.processor, self.tasks_config, [
-            ChainStep(
-                name="Restructure Topics",
-                tasks=["restructure_topics"],
-                expect_json=True,
-                max_iterations=5,
-                additional_context=existing_dirs_context
-            ),
-            ChainStep(
-                name="Consolidate Subtopics",
-                tasks=["consolidate_subtopics"],
-                expect_json=True,
-                max_iterations=3,
-                use_previous_result=True
-            )
-        ])
-        
-        restructured_result = restructure_chain.run(final_result)
-        if not restructured_result:
-            raise Exception("Failed to restructure and consolidate topics")
+        # Merge and restructure topics
+        merged_result = self._merge_final_topics(perspective_results)
+        restructured_result = self._restructure_topics(directory, merged_result)
         
         self._save_topics(directory, restructured_result)
         return restructured_result
+
+    def _validate_input(self, perspectives: Optional[List[str]], num_topics: Optional[int]):
+        """Validate input parameters."""
+        if perspectives is None and num_topics is None:
+            raise ValueError("You should provide either perspectives or num_topics")
 
     def _get_pdf_files(self, directory: Path) -> List[Path]:
         """Get all PDF files in the directory."""
@@ -151,6 +125,45 @@ class TopicGenerator:
         }
         
         return merged_result
+
+    def _restructure_topics(self, directory: Path, merged_result: str) -> str:
+        """Restructure and consolidate topics based on existing directory structure."""
+        existing_dirs = self._get_existing_directories(directory)
+        existing_dirs_context = json.dumps({"existing_directories": existing_dirs})
+        
+        restructure_chain = self._create_restructure_chain(existing_dirs_context)
+        result = restructure_chain.run(merged_result)
+        
+        if not result:
+            raise Exception("Failed to restructure and consolidate topics")
+        return result
+
+    def _get_existing_directories(self, directory: Path) -> List[str]:
+        """Get existing directory names without numbering."""
+        return [
+            re.sub(r'^\d+\.\s*', '', d.name)
+            for d in directory.iterdir() 
+            if d.is_dir()
+        ]
+
+    def _create_restructure_chain(self, context: str) -> TaskChain:
+        """Create chain for restructuring topics."""
+        return TaskChain(self.processor, self.tasks_config, [
+            ChainStep(
+                name="Restructure Topics",
+                tasks=["restructure_topics"],
+                expect_json=True,
+                max_iterations=5,
+                additional_context=context
+            ),
+            ChainStep(
+                name="Consolidate Subtopics",
+                tasks=["consolidate_subtopics"],
+                expect_json=True,
+                max_iterations=3,
+                use_previous_result=True
+            )
+        ])
 
     def _save_topics(self, directory: Path, content: str) -> None:
         """Save the generated topics to a file."""

@@ -27,34 +27,45 @@ def retry_on_error(max_retries=3):
     return decorator
 
 class TaskProcessor:
-    SAFETY_SETTINGS = {
-        HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
-        HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
-        HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
-        HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE
-    }
-
+    """Handles communication with the Gemini API for processing tasks."""
+    
     def __init__(self, api_key: str):
-        """Initialize the task processor with API key."""
         self.api_key = api_key
         genai.configure(api_key=api_key)
-        
-    def create_model(self, task_config: Dict[str, Any]) -> genai.GenerativeModel:
-        """Create a Gemini model configured for the specific task."""
-        model_config = {
-            "temperature": task_config.get("temperature", 1),
-            "top_p": task_config.get("top_p", 0.95),
-            "top_k": task_config.get("top_k", 40),
-            "max_output_tokens": task_config.get("max_output_tokens", 8192),
-            "response_mime_type": task_config.get("response_mime_type", "text/plain")
+        self._configure_safety_settings()
+    
+    def _configure_safety_settings(self):
+        """Configure default safety settings for the model."""
+        self.SAFETY_SETTINGS = {
+            category: HarmBlockThreshold.BLOCK_NONE 
+            for category in [
+                HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+                HarmCategory.HARM_CATEGORY_HARASSMENT,
+                HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT
+            ]
         }
 
+    def create_model(self, task_config: Dict[str, Any]) -> genai.GenerativeModel:
+        """Create a Gemini model with specific configuration."""
+        model_config = self._get_model_config(task_config)
+        
         return genai.GenerativeModel(
             model_name=task_config.get("model_name", "gemini-2.0-flash-exp"),
             generation_config=model_config,
             safety_settings=self.SAFETY_SETTINGS,
             system_instruction=task_config["system_instruction"]
         )
+    
+    def _get_model_config(self, task_config: Dict[str, Any]) -> Dict[str, Any]:
+        """Get model configuration from task config with defaults."""
+        return {
+            "temperature": task_config.get("temperature", 1),
+            "top_p": task_config.get("top_p", 0.95),
+            "top_k": task_config.get("top_k", 40),
+            "max_output_tokens": task_config.get("max_output_tokens", 8192),
+            "response_mime_type": task_config.get("response_mime_type", "text/plain")
+        }
 
     @retry_on_error(max_retries=3)
     def upload_file(self, file_path: str, mime_type: Optional[str] = None) -> Any:
@@ -77,46 +88,46 @@ class TaskProcessor:
                 raise Exception(f"File {file.name} failed to process")
         print("...all files ready")
 
-    @retry_on_error(max_retries=3)
-    def process_task(self, task_name: str, task_config: Dict[str, Any], content: str, expect_json: bool = False,
+    def process_task(self, task_name: str, task_config: Dict[str, Any], 
+                    content: str, expect_json: bool = False,
                     files: Optional[List[Any]] = None) -> Optional[str]:
         """Process a single task using the Gemini API."""
         print(f"Processing task: {task_name}")
         
-        # Create model for this specific task
         model = self.create_model(task_config)
+        chat = self._initialize_chat(model, files)
+        user_content = self._prepare_user_content(content, task_config, expect_json)
         
-        # Initialize chat with files if provided
-        history = []
-        if files:
-            for file in files:
-                history.append({
-                    "role": "user",
-                    "parts": [file],
-                })
-            chat = model.start_chat(history=history)
-        else:
-            chat = model.start_chat()
-        
-        # Format the user content
-        if expect_json:
-            user_content = f"{content}\n\nContinue completing this JSON structure exactly from its end. Do not repeat any previous content."
-        else:
-            if task_config.get("user_message"):
-                if "{content}" in task_config["user_message"]:
-                    user_content = task_config["user_message"].format(content=content)
-                else:
-                    user_content = task_config["user_message"]
-            else:
-                user_content = content
-
-        # Send content and get response - using simple string instead of dict
         response = chat.send_message(user_content)
+        return self._handle_response(response, task_name)
+    
+    def _initialize_chat(self, model: genai.GenerativeModel, 
+                        files: Optional[List[Any]] = None) -> Any:
+        """Initialize chat with optional file history."""
+        if not files:
+            return model.start_chat()
+            
+        history = [{"role": "user", "parts": [file]} for file in files]
+        return model.start_chat(history=history)
+    
+    def _prepare_user_content(self, content: str, task_config: Dict[str, Any], 
+                            expect_json: bool) -> str:
+        """Prepare the user content for the model."""
+        if expect_json:
+            return (f"{content}\n\nContinue completing this JSON structure "
+                   "exactly from its end. Do not repeat any previous content.")
         
+        if user_msg := task_config.get("user_message"):
+            return (user_msg.format(content=content) 
+                   if "{content}" in user_msg else user_msg)
+        return content
+    
+    def _handle_response(self, response: Any, task_name: str) -> Optional[str]:
+        """Handle the model's response."""
         if response.text:
             print(f"✓ Successfully completed task: {task_name}")
             return response.text
-        else:
-            print(f"❌ Failed to process task: {task_name}")
-            return None
+            
+        print(f"❌ Failed to process task: {task_name}")
+        return None
 
