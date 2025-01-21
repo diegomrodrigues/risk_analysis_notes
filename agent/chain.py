@@ -71,29 +71,36 @@ class TaskChain:
             content = f"Additional Context:\n{step.additional_context}\n\n{content}"
         
         # Upload input files if provided
-        uploaded_files = None
-        if step.input_files:
-            uploaded_files = []
-            for file_path in step.input_files:
-                mime_type = "application/pdf" if file_path.suffix.lower() == ".pdf" else None
-                uploaded_file = self.processor.upload_file(str(file_path), mime_type=mime_type)
-                uploaded_files.append(uploaded_file)
-            
-            # Wait for files to be processed
-            self.processor.wait_for_files_active(uploaded_files)
+        uploaded_files = self._handle_file_uploads(step)
         
         current_content = content
         iterations = 0
-        should_stop = False
+        last_valid_json = None  # Track the last valid JSON response
         
         while iterations < step.max_iterations:
             for task_name in step.tasks:
                 print(f"\n→ Executing task ({iterations + 1}/{step.max_iterations}): {task_name}")
                 task_config = self.tasks_config[task_name].copy()
                 
-                # Modified continuation logic
-                if iterations > 0 and not step.expect_json:
-                    # Take the last complete sentence or JSON structure
+                # Modified continuation logic for JSON
+                if iterations > 0 and step.expect_json:
+                    try:
+                        # Try to parse current content as JSON
+                        parsed_json = json.loads(current_content)
+                        last_valid_json = current_content
+                        # If we have valid JSON, we're done
+                        should_stop = True
+                        break
+                    except json.JSONDecodeError as e:
+                        # If JSON is incomplete, modify the prompt to continue it
+                        task_config["user_message"] = (
+                            "Continue completing this JSON structure. Here's the partial JSON:\n\n"
+                            f"{current_content}\n\n"
+                            "Complete the JSON structure, ensuring it's valid. "
+                            "Do not repeat any previous content, only provide the missing parts."
+                        )
+                elif iterations > 0:
+                    # Regular text continuation logic
                     last_chunk = self._get_last_chunk(current_content)
                     task_config["user_message"] = (
                         "Continue exactly from where this text ends. "
@@ -112,57 +119,96 @@ class TaskChain:
                     )
                     
                     if result:
-                        if iterations > 0 and not step.expect_json:
-                            # Enhanced overlap detection
-                            overlap = self._find_overlap(current_content, result)
-                            if overlap > 0:
-                                result = result[overlap:]
-                            if not result.strip():  # If no new content after removing overlap
-                                break
-                            current_content += result
-                        elif iterations > 0 and step.expect_json:
-                            current_content += result
+                        if iterations > 0:
+                            if step.expect_json:
+                                # For JSON, try to combine the results
+                                try:
+                                    combined_json = self._combine_json_content(current_content, result)
+                                    current_content = combined_json
+                                except json.JSONDecodeError:
+                                    current_content = result  # Use new result if combination fails
+                            else:
+                                # Text content handling
+                                overlap = self._find_overlap(current_content, result)
+                                if overlap > 0:
+                                    result = result[overlap:]
+                                if result.strip():
+                                    current_content += result
                         else:
                             current_content = result
                         
                         # Validate JSON if expected
                         if step.expect_json:
                             try:
-                                json.loads(current_content)                                
-                                # If JSON is valid and well-formed, we can stop iterating
+                                json.loads(current_content)
                                 should_stop = True
-                            except Exception:
-                                # Continue if JSON is incomplete and we haven't hit max iterations
+                                last_valid_json = current_content
+                            except json.JSONDecodeError:
                                 if iterations >= step.max_iterations - 1:
-                                    raise Exception("❌ Failed to get complete JSON response after max iterations")
-                                # Otherwise, continue to next iteration
-                                break  # Break the task loop to start a new iteration
-
+                                    if last_valid_json:
+                                        current_content = last_valid_json
+                                        should_stop = True
+                                    else:
+                                        raise Exception("Failed to get complete JSON response")
                     else:
                         print(f"❌ Step failed at task: {task_name}")
                         return None
                 except Exception as e:
                     print(f"❌ Error in task {task_name}: {str(e)}")
+                    if last_valid_json and step.expect_json:
+                        return last_valid_json
                     return None
             
-            # Check if we should stop based on the stop pattern
+            if should_stop or (not step.stop_at and not step.expect_json):
+                break
+                
             if step.stop_at and step.stop_at in current_content:
                 break
-
-            if not step.stop_at and not step.expect_json:
-                break
-
-            if step.expect_json and should_stop:
-                break
-
+            
             iterations += 1
-            if iterations == step.max_iterations:
-                print(f"⚠️ Reached maximum iterations ({step.max_iterations}) without finding stop pattern")
-        
+            
         self.previous_result = current_content
-        
-        print(f"✓ Completed step: {step.name}")
         return current_content
+
+    def _combine_json_content(self, current: str, new: str) -> str:
+        """Attempt to combine two JSON contents intelligently."""
+        try:
+            current_json = json.loads(current) if current.strip() else {}
+            new_json = json.loads(new) if new.strip() else {}
+            
+            # If both are valid JSON, merge them
+            if isinstance(current_json, dict) and isinstance(new_json, dict):
+                # Merge logic for topics
+                if "topics" in current_json and "topics" in new_json:
+                    current_json["topics"].extend(new_json["topics"])
+                    # Remove duplicates based on topic names
+                    seen = set()
+                    unique_topics = []
+                    for topic in current_json["topics"]:
+                        if topic["topic"] not in seen:
+                            seen.add(topic["topic"])
+                            unique_topics.append(topic)
+                    current_json["topics"] = unique_topics
+                
+                return json.dumps(current_json, indent=2)
+        except json.JSONDecodeError:
+            pass
+        
+        return new  # Return new content if combination fails
+
+    def _handle_file_uploads(self, step: ChainStep) -> Optional[List[Any]]:
+        """Handle file uploads for a step."""
+        if not step.input_files:
+            return None
+            
+        uploaded_files = []
+        for file_path in step.input_files:
+            mime_type = "application/pdf" if file_path.suffix.lower() == ".pdf" else None
+            uploaded_file = self.processor.upload_file(str(file_path), mime_type=mime_type)
+            uploaded_files.append(uploaded_file)
+        
+        self.processor.wait_for_files_active(uploaded_files)
+        return uploaded_files
     
     def _get_last_chunk(self, text: str, chunk_size: int = 200) -> str:
         """Get the last meaningful chunk of text (complete sentence or JSON structure)."""

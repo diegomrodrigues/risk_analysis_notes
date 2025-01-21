@@ -78,7 +78,7 @@ class TaskProcessor:
         print("...all files ready")
 
     @retry_on_error(max_retries=3)
-    def process_task(self, task_name: str, task_config: Dict[str, Any], content: str, expect_json: bool,
+    def process_task(self, task_name: str, task_config: Dict[str, Any], content: str, expect_json: bool = False,
                     files: Optional[List[Any]] = None) -> Optional[str]:
         """Process a single task using the Gemini API."""
         print(f"Processing task: {task_name}")
