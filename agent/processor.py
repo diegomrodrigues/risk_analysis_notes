@@ -97,11 +97,7 @@ class TaskProcessor:
             chat = model.start_chat(history=history)
         else:
             chat = model.start_chat()
-
-        # Ensure content is a string
-        if isinstance(content, dict):
-            content = str(content)
-
+        
         # Format the user content
         if expect_json:
             user_content = f"{content}\n\nContinue completing this JSON structure exactly from its end. Do not repeat any previous content."
@@ -114,8 +110,8 @@ class TaskProcessor:
             else:
                 user_content = content
 
-        # Send content and get response
-        response = chat.send_message({"text": user_content})
+        # Send content and get response - using simple string instead of dict
+        response = chat.send_message(user_content)
         
         if response.text:
             print(f"✓ Successfully completed task: {task_name}")
