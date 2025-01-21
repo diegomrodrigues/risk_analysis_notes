@@ -101,7 +101,7 @@ class TaskProcessor:
         if expect_json:
             user_content = (
                 content,
-                "Continue completing this JSON structure. Do not repeat any previous content."
+                "\n\nContinue completing this JSON structure exactly from its end. Do not repeat any previous content."
             )
         else:
             if task_config["user_message"]:
