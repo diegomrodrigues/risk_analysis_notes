@@ -76,6 +76,7 @@ class TaskChain:
         current_content = content
         iterations = 0
         last_valid_json = None  # Track the last valid JSON response
+        should_stop = False
         
         while iterations < step.max_iterations:
             for task_name in step.tasks:

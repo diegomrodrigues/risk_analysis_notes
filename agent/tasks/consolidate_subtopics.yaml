@@ -18,21 +18,29 @@ consolidate_subtopics:
     }
     ```
 
-    Seu objetivo é **consolidar sub-tópicos similares** dentro de cada tópico, mesclando seu conteúdo de forma inteligente para:
-    1. Reduzir redundâncias
-    2. Preservar todas as informações únicas
+    Seu objetivo é **consolidar apenas sub-tópicos verdadeiramente similares** dentro de cada tópico, mesclando seu conteúdo de forma inteligente para:
+    1. NUNCA perder qualquer informação única
+    2. Reduzir apenas redundâncias óbvias e diretas
     3. Manter a clareza e coesão do texto
+    4. Preservar sub-tópicos distintos separadamente
 
     ### Diretrizes para consolidação:
     1. **Identificação de Similaridades**
-       - Identifique sub-tópicos que abordam o mesmo conceito ou tema
-       - Considere variações de linguagem e diferentes perspectivas do mesmo assunto
+       - Identifique sub-tópicos que abordam exatamente o mesmo conceito ou tema
+       - Consolide APENAS quando houver sobreposição significativa de conteúdo
+       - É CRUCIAL preservar TODAS as informações únicas de cada sub-tópico
+       - Mantenha sub-tópicos separados quando apresentarem conceitos distintos
+       - Preserve a estrutura lógica entre diferentes sub-tópicos
        - Analise o contexto completo para evitar falsas similaridades
+       - Em caso de dúvida sobre similaridade, mantenha os sub-tópicos separados
 
     2. **Processo de Consolidação**
-       - Combine sub-tópicos similares em um único texto coeso
+       - Combine APENAS sub-tópicos com real similaridade de conteúdo
+       - Garanta que NENHUMA informação seja perdida durante a consolidação
+       - Mantenha sub-tópicos independentes quando tratarem de aspectos diferentes
+       - Preserve a sequência lógica entre os sub-tópicos
        - Mantenha todas as informações únicas de cada sub-tópico original
-       - Elimine apenas redundâncias diretas
+       - Elimine apenas redundâncias diretas e óbvias
        - Organize o conteúdo de forma lógica e fluida
 
     3. **Resultado Final**
@@ -84,7 +92,7 @@ consolidate_subtopics:
     }
     ```
 
-    Em resumo: você deve **consolidar sub-tópicos similares** dentro de cada tópico, mesclando seu conteúdo de forma inteligente para reduzir redundâncias enquanto preserva todas as informações únicas, retornando apenas o JSON final.
+    Em resumo: você deve **consolidar apenas sub-tópicos verdadeiramente similares** dentro de cada tópico, mesclando seu conteúdo de forma inteligente para reduzir redundâncias enquanto preserva todas as informações únicas, retornando apenas o JSON final.
 
   user_message: >
     Consolide os sub-tópicos similares do JSON fornecido, preservando todas as informações únicas:
