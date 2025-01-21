@@ -111,7 +111,7 @@ class TaskChain:
                     )
                     
                     if result:
-                        if iterations > 0:
+                        if iterations > 0 and not step.expect_json:
                             # Enhanced overlap detection
                             overlap = self._find_overlap(current_content, result)
                             if overlap > 0:
@@ -119,28 +119,18 @@ class TaskChain:
                             if not result.strip():  # If no new content after removing overlap
                                 break
                             current_content += result
+                        elif iterations > 0 and step.expect_json:
+                            current_content += result
                         else:
                             current_content = result
                         
                         # Validate JSON if expected
                         if step.expect_json:
                             try:
-                                json.loads(current_content)
-
-                                # Parse JSON with strict validation using a temporary file
-                                with tempfile.NamedTemporaryFile(mode='w+', suffix='.json', encoding='utf-8') as tmp_file:
-                                    tmp_file.write(current_content)
-                                    tmp_file.flush()
-                                    tmp_file.seek(0)
-                                    parsed_json = json.load(tmp_file)
-                                
-                                # Additional validation checks
-                                if not isinstance(parsed_json, (dict, list)):
-                                    raise json.JSONDecodeError("JSON must be an object or array", current_content, 0)
-                                
+                                json.loads(current_content)                                
                                 # If JSON is valid and well-formed, we can stop iterating
                                 should_stop = True
-                            except json.JSONDecodeError:
+                            except Exception:
                                 # Continue if JSON is incomplete and we haven't hit max iterations
                                 if iterations >= step.max_iterations - 1:
                                     raise Exception("❌ Failed to get complete JSON response after max iterations")
