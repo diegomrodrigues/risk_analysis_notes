@@ -92,7 +92,7 @@ class TaskChain:
                 task_config = self.tasks_config[task_name].copy()
                 
                 # Modified continuation logic
-                if iterations > 0:
+                if iterations > 0 and not step.expect_json:
                     # Take the last complete sentence or JSON structure
                     last_chunk = self._get_last_chunk(current_content)
                     task_config["user_message"] = (
@@ -101,6 +101,8 @@ class TaskChain:
                         f"{last_chunk}\n\n"
                         "Continue the text from this point, providing only new content:\n"
                     )
+                elif iterations > 0 and step.expect_json:
+                    task_config["user_message"] = "Continue exactly from where you left."
                 
                 try:
                     result = self.processor.process_task(
