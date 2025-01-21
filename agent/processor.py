@@ -98,13 +98,15 @@ class TaskProcessor:
         else:
             chat = model.start_chat()
 
+        # Ensure content is a string
+        if isinstance(content, dict):
+            content = str(content)
+
+        # Format the user content
         if expect_json:
-            user_content = (
-                content,
-                "\n\nContinue completing this JSON structure exactly from its end. Do not repeat any previous content."
-            )
+            user_content = f"{content}\n\nContinue completing this JSON structure exactly from its end. Do not repeat any previous content."
         else:
-            if task_config["user_message"]:
+            if task_config.get("user_message"):
                 if "{content}" in task_config["user_message"]:
                     user_content = task_config["user_message"].format(content=content)
                 else:
@@ -113,7 +115,7 @@ class TaskProcessor:
                 user_content = content
 
         # Send content and get response
-        response = chat.send_message(user_content)
+        response = chat.send_message({"text": user_content})
         
         if response.text:
             print(f"✓ Successfully completed task: {task_name}")
