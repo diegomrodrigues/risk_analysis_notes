@@ -141,9 +141,9 @@ class TopicProcessor:
 
     def _build_input_text(self, directory: Path, section_name: str, topic: str) -> str:
         """Build the input text for the processing chain."""
-        return (
-            f"CONTEXT_PLACEHOLDER = {self.context} e {directory}\n"
-            f"TOPIC_PLACEHOLDER = {section_name}\n"
+        return "\n".join(
+            f"CONTEXT_PLACEHOLDER = {self.context} e {directory}"
+            f"TOPIC_PLACEHOLDER = {section_name}"
             f"SUBTOPIC_PLACEHOLDER = {topic}"
         )
 

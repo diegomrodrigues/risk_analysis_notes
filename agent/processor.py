@@ -97,7 +97,7 @@ class TaskProcessor:
         model = self.create_model(task_config)
         chat = self._initialize_chat(model, files)
         user_content = self._prepare_user_content(content, task_config, expect_json)
-        
+
         response = chat.send_message(user_content)
         return self._handle_response(response, task_name)
     
@@ -120,6 +120,10 @@ class TaskProcessor:
         if user_msg := task_config.get("user_message"):
             return (user_msg.format(content=content) 
                    if "{content}" in user_msg else user_msg)
+    
+        if not isinstance(content, str):
+            return str(content)
+
         return content
     
     def _handle_response(self, response: Any, task_name: str) -> Optional[str]:
