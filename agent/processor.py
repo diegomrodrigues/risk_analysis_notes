@@ -99,7 +99,10 @@ class TaskProcessor:
             chat = model.start_chat()
 
         if expect_json:
-            user_content = "Continue completing this JSON structure. Do not repeat any previous content."
+            user_content = (
+                content,
+                "Continue completing this JSON structure. Do not repeat any previous content."
+            )
         else:
             if task_config["user_message"]:
                 if "{content}" in task_config["user_message"]:
