@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Tuple
 from concurrent.futures import ThreadPoolExecutor
-from .processor import TaskProcessor
+from .processor import TaskProcessor, retry_on_error
 from .chain import TaskChain, ChainStep
 from .filename_handler import FilenameHandler
 
@@ -49,6 +49,7 @@ class TopicProcessor:
             if result and result.success:
                 processed_topics.append(result)
 
+    @retry_on_error(max_retries=3)
     def _process_single_topic(self, directory: Path, section_name: str, topic: str,
                             pdf_files: List[Path], previous_topics: List[TopicResult],
                             max_previous_topics: int) -> Optional[TopicResult]:
