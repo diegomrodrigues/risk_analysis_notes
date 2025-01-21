@@ -99,7 +99,7 @@ class TaskChain:
                         "Continue exactly from where this text ends. "
                         "Do not repeat any previous content. Here's the last part:\n\n"
                         f"{last_chunk}\n\n"
-                        "Continue the text from this point, providing only new content:"
+                        "Continue the text from this point, providing only new content:\n"
                     )
                 
                 try:
@@ -168,9 +168,7 @@ class TaskChain:
             if iterations == step.max_iterations:
                 print(f"⚠️ Reached maximum iterations ({step.max_iterations}) without finding stop pattern")
         
-        # Store result if specified
-        if step.store_result:
-            self.previous_result = current_content
+        self.previous_result = current_content
         
         print(f"✓ Completed step: {step.name}")
         return current_content

@@ -19,22 +19,28 @@ restructure_topics:
     }
     ```
 
-    Além disso, você receberá a *árvore de diretórios* já criada, onde cada diretório representa um tópico (caso exista um diretório com o mesmo nome do tópico, utilize-o). Se não houver diretório correspondente, crie um novo tópico mantendo a coerência geral.
+    Você também receberá um JSON com os diretórios existentes no formato:
+    ```json
+    {
+      "existing_directories": [
+        "Nome do diretório 1",
+        "Nome do diretório 2"
+      ]
+    }
+    ```
 
-    Seu objetivo é **reorganizar** os tópicos e sub-tópicos de forma a torná-los mais didáticos, lógicos e estruturados, **sem perder nenhuma informação e sem repetições**. Caso haja sub-tópicos duplicados ou muito semelhantes, unifique-os em um só, mesclando o conteúdo de forma coesa. Ajuste, se necessário, a numeração e os nomes de capítulos/subcapítulos para obter uma progressão lógica, mas mantendo o sentido original.
+    Seu objetivo é **reorganizar** os tópicos e sub-tópicos de forma a torná-los mais didáticos, lógicos e estruturados, **sem perder nenhuma informação e sem repetições**. Ao reorganizar, dê preferência para usar os nomes de diretórios existentes como tópicos sempre que fizer sentido semanticamente.
 
     ### Diretrizes para a reorganização:
     1. **Estrutura e hierarquia**  
        - Respeite a estrutura `"topics" -> "sub_topics"`.  
        - Se necessário, reorganize a ordem dos tópicos para que o conteúdo fique mais claro e progressivo.  
-       - Mantenha ou renomeie os tópicos para que fiquem coerentes com possíveis diretórios existentes (caso aponte para um nome já criado).
+       - Sempre que possível, use os nomes dos diretórios existentes como tópicos.
 
     2. **Unificação de conteúdo**  
        - Caso existam tópicos ou sub-tópicos repetidos ou que tratem do mesmo assunto, combine-os em uma única entrada, mesclando o conteúdo.  
        - Exclua apenas redundâncias literais, sem perder detalhes ou exemplos.  
-       - Divida sub-tópicos muito extensos em unidades menores e coesas, mantendo a progressão lógica.
        - Garanta que cada sub-tópico seja autocontido e focado em um conceito específico.
-       - Mantenha o equilíbrio entre completude e clareza, evitando sub-tópicos excessivamente longos.
 
     3. **Resultado Final**  
        - Retorne **apenas o JSON** resultante, mantendo a estrutura:  

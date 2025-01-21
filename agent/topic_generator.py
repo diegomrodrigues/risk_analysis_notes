@@ -3,6 +3,7 @@ from typing import List, Optional
 from .chain import TaskChain, ChainStep
 from .processor import TaskProcessor
 import json
+import re
 
 class TopicGenerator:
     """Handles the generation and merging of topics for a directory."""
@@ -26,19 +27,35 @@ class TopicGenerator:
         perspective_results = self._generate_perspective_topics(pdf_files, perspectives, num_topics)
         final_result = self._merge_final_topics(perspective_results)
         
-        # Add restructuring step
+        # Get existing directory names without numbers
+        existing_dirs = [
+            re.sub(r'^\d+\.\s*', '', d.name)
+            for d in directory.iterdir() 
+            if d.is_dir()
+        ]
+        existing_dirs_context = json.dumps({"existing_directories": existing_dirs})
+        
+        # Add restructuring step with existing directories context
         restructure_chain = TaskChain(self.processor, self.tasks_config, [
             ChainStep(
                 name="Restructure Topics",
                 tasks=["restructure_topics"],
                 expect_json=True,
-                max_iterations=5
+                max_iterations=5,
+                additional_context=existing_dirs_context
+            ),
+            ChainStep(
+                name="Consolidate Subtopics",
+                tasks=["consolidate_subtopics"],
+                expect_json=True,
+                max_iterations=3,
+                use_previous_result=True
             )
         ])
         
         restructured_result = restructure_chain.run(final_result)
         if not restructured_result:
-            raise Exception("Failed to restructure topics")
+            raise Exception("Failed to restructure and consolidate topics")
         
         self._save_topics(directory, restructured_result)
         return restructured_result
