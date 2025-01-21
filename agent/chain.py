@@ -101,14 +101,13 @@ class TaskChain:
                         f"{last_chunk}\n\n"
                         "Continue the text from this point, providing only new content:\n"
                     )
-                elif iterations > 0 and step.expect_json:
-                    task_config["user_message"] = "Continue exactly from where you left."
                 
                 try:
                     result = self.processor.process_task(
                         task_name, 
                         task_config, 
                         current_content,
+                        expect_json=step.expect_json,
                         files=uploaded_files
                     )
                     

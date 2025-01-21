@@ -4,6 +4,7 @@ from datetime import datetime
 import traceback
 from functools import wraps
 import time
+import json
 from typing import Optional, Dict, Any, List
 from pathlib import Path
 
@@ -77,7 +78,7 @@ class TaskProcessor:
         print("...all files ready")
 
     @retry_on_error(max_retries=3)
-    def process_task(self, task_name: str, task_config: Dict[str, Any], content: str, 
+    def process_task(self, task_name: str, task_config: Dict[str, Any], content: str, expect_json: bool,
                     files: Optional[List[Any]] = None) -> Optional[str]:
         """Process a single task using the Gemini API."""
         print(f"Processing task: {task_name}")
@@ -97,10 +98,16 @@ class TaskProcessor:
         else:
             chat = model.start_chat()
 
-        if task_config["user_message"] and "{content}" in task_config["user_message"]:
-            user_content = task_config["user_message"].format(content=content)
+        if expect_json:
+            user_content = "Continue completing this JSON structure. Do not repeat any previous content."
         else:
-            user_content = content
+            if task_config["user_message"]:
+                if "{content}" in task_config["user_message"]:
+                    user_content = task_config["user_message"].format(content=content)
+                else:
+                    user_content = task_config["user_message"]
+            else:
+                user_content = content
 
         # Send content and get response
         response = chat.send_message(user_content)
