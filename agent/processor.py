@@ -117,13 +117,10 @@ class TaskProcessor:
             return (f"{content}\n\nContinue completing this JSON structure "
                    "exactly from its end. Do not repeat any previous content.")
         
-        if user_msg := task_config.get("user_message"):
-            return (user_msg.format(content=content) 
-                   if "{content}" in user_msg else user_msg)
+        if task_config.get("user_message"):
+            user_message = task_config["user_message"]
+            return user_message.format(content=content)                               
     
-        if not isinstance(content, str):
-            return str(content)
-
         return content
     
     def _handle_response(self, response: Any, task_name: str) -> Optional[str]:

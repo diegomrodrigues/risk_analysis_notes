@@ -66,5 +66,5 @@ generate_draft_task:
     - Adicione $\blacksquare$ ao final das provas
     - Adicione um comentário <!-- END --> ao final do texto quando tiver certeza que o draft está completo
 
-  user_message:
+  user_message: >
     {content}
