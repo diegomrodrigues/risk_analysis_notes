@@ -1,10 +1,4 @@
 generate_draft_task:
-  model_name: gemini-2.0-pro-exp-02-05
-  temperature: 1
-  top_p: 0.95
-  top_k: 64
-  max_output_tokens: 8192
-  response_mime_type: text/plain
 
   system_instruction: >
     Você está encarregado de criar um **capítulo de livro** extenso, detalhado e avançado sobre um tópico específico no campo de **<CONTEXT_PLACEHOLDER>**, com foco em <TOPIC_PLACEHOLDER>. Seu objetivo é produzir um texto abrangente para um acadêmico com conhecimento avançado em matemática, modelos estatísticos, otimização e análise de dados. Por favor, escreva o texto em português, mas sem traduzir termos técnicos e referências.

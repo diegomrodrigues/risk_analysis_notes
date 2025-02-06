@@ -1,10 +1,4 @@
 inject_images_task:
-  model_name: gemini-2.0-pro-exp-02-05
-  temperature: 1
-  top_p: 0.95
-  top_k: 64
-  max_output_tokens: 8192
-  response_mime_type: text/plain
 
   system_instruction: >
     Analyze the content and available images from the images.md file. Insert relevant images using Markdown syntax where they can enhance understanding. Follow these guidelines:
@@ -22,13 +16,66 @@ inject_images_task:
     11. Double-check that no content is lost during image insertion
     12. Add <!-- END --> at the very end
 
+    CORRECT Examples:
+    Example 1 - Single Image:
+    Input Content:
+    "The delta-normal method combines portfolio positions with risk factors to calculate VAR. This approach maps positions using Delta and models risk factors using normal distribution."
+
+    Images.md Entry:
+    | `images/delta_normal_method_flowchart.jpg` | This figure illustrates the steps involved in the delta-normal method for calculating Value at Risk (VAR). | `delta_normal_method_flowchart.jpg` |
+
+    Output:
+    "The delta-normal method combines portfolio positions with risk factors to calculate VAR. This approach maps positions using Delta and models risk factors using normal distribution.
+
+    ![This figure illustrates the steps involved in the delta-normal method for calculating Value at Risk (VAR)](./../images/delta_normal_method_flowchart.jpg)
+    "
+
+    Example 2 - Multiple Related Images:
+    Input Content:
+    "The VAR system processes data through multiple stages. First, it collects portfolio positions and market data. Then, the risk engine processes this information to calculate potential losses. For nonlinear exposures like options, the distribution of potential losses can be asymmetric."
+
+    Images.md Entries:
+    | `images/var_system_data_flow.jpg` | Diagrama de blocos que ilustra a estrutura de um sistema Value-at-Risk (VAR), mostrando o fluxo de dados desde as posições do portfólio e fatores de risco até a geração de relatórios VAR. | `var_system_data_flow.jpg` |
+    | `images/nonlinear_exposure_var_distribution.jpg` | This image illustrates the distribution with nonlinear exposures, specifically showing payoff and frequency graphs with Value at Risk (VAR) for a portfolio. | `nonlinear_exposure_var_distribution.jpg` |
+
+    Output:
+    "The VAR system processes data through multiple stages. First, it collects portfolio positions and market data. Then, the risk engine processes this information to calculate potential losses.
+
+    ![Diagrama de blocos que ilustra a estrutura de um sistema Value-at-Risk (VAR), mostrando o fluxo de dados desde as posições do portfólio e fatores de risco até a geração de relatórios VAR](./../images/var_system_data_flow.jpg)
+
+    For nonlinear exposures like options, the distribution of potential losses can be asymmetric.
+
+    ![This image illustrates the distribution with nonlinear exposures, specifically showing payoff and frequency graphs with Value at Risk (VAR) for a portfolio](./../images/nonlinear_exposure_var_distribution.jpg)
+    "
+
+    Example 3 - Historical Context:
+    Input Content:
+    "The Barings Bank collapse in 1995 followed the Kobe earthquake, which had a significant impact on the Nikkei Index. This event highlighted the importance of proper risk management and VAR calculations."
+
+    Images.md Entry:
+    | `images/nikkei_index_kobe_barings.jpg` | This image illustrates the fall of the Nikkei Index and marks the dates of the Kobe earthquake and Barings' collapse. This is discussed in relation to the Barings story and the measurement of Value at Risk (VAR). | `nikkei_index_kobe_barings.jpg` |
+
+    Output:
+    "The Barings Bank collapse in 1995 followed the Kobe earthquake, which had a significant impact on the Nikkei Index. This event highlighted the importance of proper risk management and VAR calculations.
+
+    ![This image illustrates the fall of the Nikkei Index and marks the dates of the Kobe earthquake and Barings' collapse](./../images/nikkei_index_kobe_barings.jpg)
+    "
+
+    INCORRECT Examples (DO NOT DO THIS):
+    ❌ Wrong path: ![Description](./images/file.jpg)
+    ❌ Modified filename: ![Description](./../images/delta_normal_flowchart.jpg)
+    ❌ Missing description: ![](./../images/delta_normal_method_flowchart.jpg)
+    ❌ Added content: "Here we can see the flowchart that shows..."
+    ❌ Removed original text
+    ❌ Missing <!-- END --> marker
+
   user_message: >
+    Available Images Catalog (image.md):
+    {images_content}
+
     Enhance the content by adding relevant images from the images catalog below:
 
     {content}
-
-    Available Images Catalog (image.md):
-    {images_content}
 
     Remember to:
     - Only add images that improve clarity
