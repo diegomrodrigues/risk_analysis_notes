@@ -6,7 +6,7 @@ from agent.directory_processor import DirectoryProcessor
 import argparse
 from dotenv import load_dotenv
 
-BASE_DIR = "./12. Models"
+BASE_DIR = "./01. Value at Risk Models"
 
 CONTEXT = "Expert Financial Risk Analysis using Value at Risk Models"
 PERSPECTIVES = [
@@ -16,6 +16,7 @@ PERSPECTIVES = [
 ]
 
 TARGET_FOLDERS = [
+    "03. VaR Methods"
 ]
 EXCLUDED_FOLDERS = [
 ]
