@@ -8,23 +8,16 @@ from dotenv import load_dotenv
 
 BASE_DIR = "./12. Models"
 
-CONTEXT = "Estudo Avançado de Large Language Models e Natural Language Understanding"
+CONTEXT = "Expert Financial Risk Analysis using Value at Risk Models"
 PERSPECTIVES = [
-    # General Topics
-    "Foque nos conceitos matemáticos e teóricos por de trás dos large language models"
-    "Foque nos conceitos arquiteturais dos large language models, incluindo attention mechanisms, transformers, tokenization, model architectures e outros.",
-    "Foque nos aspectos práticos de implementação, incluindo training procedures, optimization techniques, deployment strategies, considerações de scaling e outros.",
-
-    # Article Topics
-    "Foque nos datasets usados durante o treino e resultados obtidos em cada experimento realizado no paper",
-    "Foque nos prompts e detalhes do modelo usados nos experimentos abordados no paper",
-    "Foque nos diferentes experimentos realizados considerando ablation studies e outros resultados obtidos no paper"
+    "Foque nos aspectos matemáticos e fórmulas, incluindo definições formais, teoremas, provas e demonstrações matemáticas.",
+    "Foque nos conceitos financeiros e econômicos, incluindo aplicações práticas, interpretações e implicações para o mercado.",
+    "Foque nos aspectos computacionais e algorítmicos, incluindo complexidade, implementação e otimização."
 ]
 
 TARGET_FOLDERS = [
 ]
 EXCLUDED_FOLDERS = [
-    "01. Deep Seek Math"
 ]
 
 # Processing parameters

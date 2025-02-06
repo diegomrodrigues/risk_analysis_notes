@@ -58,11 +58,29 @@ class ImageProcessor:
                 
                 result = self._process_single_image(image_file, pdf_file)
                 if result:
-                    image_entries.append({
-                        'path': str(image_file.relative_to(directory)),
-                        'description': result.get('description', ''),
-                        'filename': result.get('filename', '')
-                    })
+                    # Get the new filename from the result
+                    new_filename = result.get('filename', '')
+                    if new_filename:
+                        # Preserve the original file extension
+                        new_filename = f"{new_filename}{image_file.suffix}"
+                        new_path = image_file.parent / new_filename
+                        try:
+                            image_file.rename(new_path)
+                            if self.debug:
+                                print(f"  - Renamed to: {new_filename}")
+                            # Update the path to reflect the new filename
+                            relative_path = new_path.relative_to(directory)
+                        except Exception as e:
+                            print(f"❌ Failed to rename {image_file.name}: {str(e)}")
+                            relative_path = image_file.relative_to(directory)
+                    else:
+                        relative_path = image_file.relative_to(directory)
+                
+                image_entries.append({
+                    'path': str(relative_path),
+                    'description': result.get('description', ''),
+                    'filename': new_filename or image_file.name
+                })
 
         if image_entries:
             self._generate_markdown_summary(directory, image_entries)
@@ -75,7 +93,7 @@ class ImageProcessor:
                 tasks=["process_image_task"],
                 input_files=[image_file, pdf_file],
                 expect_json=True,
-                extract_json=True
+                extract_json=False
             )
         ], debug=self.debug)
 
