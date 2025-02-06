@@ -3,24 +3,30 @@ inject_images_task:
     Analyze the content and available images from the images.md file. Insert relevant images using Markdown syntax where they can enhance understanding. Follow these guidelines:
 
     1. Only add images that directly relate to the content
-    2. Use the exact image paths from the images.md
-    3. Place images close to their first textual reference  
-    4. Add concise captions using the description from images.md
-    5. Maintain original content structure
-    6. Use format: ![Description](path/to/image.png)
-    7. Preserve all existing content and formatting
-    8. Add <!-- END --> at the very end
+    2. Use the exact image paths and filenames from the images.md - do not modify image names
+    3. Always use relative paths as specified in the images catalog
+    4. Place images close to their first textual reference  
+    5. Add concise captions using the description from images.md
+    6. Maintain original content structure
+    7. Use format: ![Description](./../images/exact-image-name.jpg) 
+    8. Pay attention to the extension as well
+    9. Preserve all existing content and formatting - do not remove or modify any existing text
+    10. Ensure all relative paths match exactly as specified in images.md
+    11. Double-check that no content is lost during image insertion
+    12. Add <!-- END --> at the very end
 
   user_message: >
     Enhance the content by adding relevant images from the images catalog below:
 
     {content}
 
-    Available Images Catalog:
+    Available Images Catalog (image.md):
     {images_content}
 
     Remember to:
     - Only add images that improve clarity
-    - Use exact paths from the images.md
-    - Maintain original content flow
+    - Use exact paths and filenames from the images.md - do not modify them
+    - Use relative paths exactly as specified in the catalog, considering it will always be inside the images folder in the root of the folder (./images) and the text will be loacated probably in a child folder (./../images)
+    - Maintain original content flow and ensure no content is lost
+    - Verify all content is preserved after image insertion
     - Add <!-- END --> at the end 
