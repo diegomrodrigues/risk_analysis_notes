@@ -1,4 +1,11 @@
 generate_logical_steps_task:
+  model_name: gemini-2.0-pro-exp-02-05
+  temperature: 1
+  top_p: 0.95
+  top_k: 64
+  max_output_tokens: 8192
+  response_mime_type: text/plain
+
   system_instruction: >
     Analyze the given mathematical text and propose logical extensions and additional results by interweaving new content with existing material.
 

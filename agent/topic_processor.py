@@ -256,10 +256,10 @@ class TopicProcessor:
             tasks=[
                 "cleanup_task",
                 "inject_images_task",
-                #"generate_logical_steps_task",
-                #"generate_step_proofs_task",
-                #"generate_examples_task",
-                #"format_math_task"
+                "generate_logical_steps_task",
+                "generate_step_proofs_task",
+                "generate_examples_task",
+                "format_math_task"
             ],
             stop_at="<!-- END -->",
             max_iterations=3
