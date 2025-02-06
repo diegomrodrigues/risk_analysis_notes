@@ -2,37 +2,20 @@ from pathlib import Path
 import os
 import yaml
 from agent.processor import TaskProcessor
-from agent.directory_processor import DirectoryProcessor
+from agent.image_processor import ImageProcessor
 import argparse
 from dotenv import load_dotenv
 
+# Base directory for processing
 BASE_DIR = "./12. Models"
 
-CONTEXT = "Estudo Avançado de Large Language Models e Natural Language Understanding"
-PERSPECTIVES = [
-    # General Topics
-    "Foque nos conceitos matemáticos e teóricos por de trás dos large language models"
-    "Foque nos conceitos arquiteturais dos large language models, incluindo attention mechanisms, transformers, tokenization, model architectures e outros.",
-    "Foque nos aspectos práticos de implementação, incluindo training procedures, optimization techniques, deployment strategies, considerações de scaling e outros.",
-
-    # Article Topics
-    "Foque nos datasets usados durante o treino e resultados obtidos em cada experimento realizado no paper",
-    "Foque nos prompts e detalhes do modelo usados nos experimentos abordados no paper",
-    "Foque nos diferentes experimentos realizados considerando ablation studies e outros resultados obtidos no paper"
-]
-
+# Configuration for directory filtering
 TARGET_FOLDERS = [
+    # Add specific folders to process, if needed
 ]
 EXCLUDED_FOLDERS = [
     "01. Deep Seek Math"
 ]
-
-# Processing parameters
-NUM_TOPICS = None
-MAX_WORKERS = 2
-JSONS_PER_PERSPECTIVE = 3
-NUM_CONSOLIDATION_STEPS = 1
-MAX_PREVIOUS_TOPICS = 5
 
 def load_tasks_config(tasks_dir: str = './agent/tasks') -> dict:
     """Load all YAML files from the tasks directory into a single config dictionary."""
@@ -68,9 +51,11 @@ def main():
     load_dotenv()
     
     # Parse command line arguments
-    parser = argparse.ArgumentParser(description='Process study materials with topic generation')
+    parser = argparse.ArgumentParser(description='Process images and generate metadata')
     parser.add_argument('--debug', type=lambda x: x.lower() == 'true', default=False,
                        help='Enable debug mode (true/false)')
+    parser.add_argument('--base-dir', type=str, default=BASE_DIR,
+                       help='Base directory to process')
     args = parser.parse_args()
     
     # Load configuration and initialize processor
@@ -79,33 +64,38 @@ def main():
     if not api_key:
         raise ValueError("GOOGLE_API_KEY environment variable is required")
     
+    # Initialize processors
     processor = TaskProcessor(api_key=api_key)
-    directory_processor = DirectoryProcessor(
-        processor, 
-        tasks_config, 
-        CONTEXT,
+    image_processor = ImageProcessor(
+        processor=processor,
+        tasks_config=tasks_config,
         debug=args.debug
     )
     
-    # Define base directory and settings
-    base_dir = Path(BASE_DIR)
+    # Define base directory and get target folders
+    base_dir = Path(args.base_dir)
+    if not base_dir.exists():
+        raise ValueError(f"Base directory not found: {base_dir}")
+    
     target_folders = get_numbered_folders(base_dir)
+    print(f"\n📂 Found {len(target_folders)} target folders to process")
     
     # Process each target directory
     for folder in target_folders:
         directory = base_dir / folder
         if directory.exists():
-            directory_processor.process_with_topics(
-                directory,
-                perspectives=PERSPECTIVES,
-                num_topics=NUM_TOPICS or len(PERSPECTIVES),
-                max_workers=MAX_WORKERS,
-                jsons_per_perspective=JSONS_PER_PERSPECTIVE,
-                num_consolidation_steps=NUM_CONSOLIDATION_STEPS,
-                max_previous_topics=MAX_PREVIOUS_TOPICS
-            )
+            print(f"\n🔍 Processing directory: {folder}")
+            try:
+                image_processor.process_directory_tree(
+                    base_dir=directory,
+                    excluded_dirs=EXCLUDED_FOLDERS
+                )
+            except Exception as e:
+                print(f"❌ Error processing directory {folder}: {str(e)}")
         else:
-            print(f"Directory not found: {directory}")
+            print(f"⚠️ Directory not found: {directory}")
+    
+    print("\n✨ Image processing completed")
 
 if __name__ == "__main__":
-    main()
+    main() 

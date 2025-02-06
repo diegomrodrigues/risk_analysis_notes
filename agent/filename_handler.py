@@ -90,13 +90,29 @@ class FilenameHandler:
         # Check for existing similar file
         existing_file = self._check_similar_exists(directory, suggested_name)
         if existing_file:
-            return FilenameResult(
-                filename=existing_file,
-                path=directory / existing_file,
-                exists=True
-            )
+            # Try to generate an alternative name by running the chain again
+            # with additional context about avoiding the existing name
+            alternative_prompt = f"""
+            Generate a different name for this topic.
+            Current topic: {topic}
+            Existing name to avoid: {suggested_name}
+            """
+            alternative_name = chain.run(alternative_prompt)
+            
+            if alternative_name and alternative_name.strip() != suggested_name:
+                suggested_name = alternative_name.strip()
+                # Check if the alternative name also exists
+                existing_file = self._check_similar_exists(directory, suggested_name)
+                
+            if existing_file:
+                # If we still have a conflict, fall back to adding a number
+                base_name = suggested_name
+                counter = 1
+                while self._check_similar_exists(directory, f"{base_name} {counter}"):
+                    counter += 1
+                suggested_name = f"{base_name} {counter}"
         
-        # Get next available number
+        # Get next available number prefix
         existing_numbers = self._get_existing_numbers(directory)
         next_num = 1
         while next_num in existing_numbers:

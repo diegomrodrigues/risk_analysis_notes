@@ -1,0 +1,26 @@
+inject_images_task:
+  system_instruction: >
+    Analyze the content and available images from the images.md file. Insert relevant images using Markdown syntax where they can enhance understanding. Follow these guidelines:
+
+    1. Only add images that directly relate to the content
+    2. Use the exact image paths from the images.md
+    3. Place images close to their first textual reference  
+    4. Add concise captions using the description from images.md
+    5. Maintain original content structure
+    6. Use format: ![Description](path/to/image.png)
+    7. Preserve all existing content and formatting
+    8. Add <!-- END --> at the very end
+
+  user_message: >
+    Enhance the content by adding relevant images from the images catalog below:
+
+    {content}
+
+    Available Images Catalog:
+    {images_content}
+
+    Remember to:
+    - Only add images that improve clarity
+    - Use exact paths from the images.md
+    - Maintain original content flow
+    - Add <!-- END --> at the end 

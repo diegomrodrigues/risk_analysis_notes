@@ -5,34 +5,51 @@ from concurrent.futures import ThreadPoolExecutor
 from .processor import TaskProcessor
 from .topic_generator import TopicGenerator
 from .topic_processor import TopicProcessor
+from .utils import retry_on_error
 
 class DirectoryProcessor:
     """Handles the processing of directories and their contents."""
     
-    def __init__(self, processor: TaskProcessor, tasks_config: dict, context: str):
+    def __init__(self, processor: TaskProcessor, tasks_config: dict, context: str, debug: bool = False):
         self.processor = processor
         self.tasks_config = tasks_config
-        self.topic_generator = TopicGenerator(processor, tasks_config)
-        self.topic_processor = TopicProcessor(processor, tasks_config, context)
+        self.topic_generator = TopicGenerator(processor, tasks_config, debug=debug)
+        self.topic_processor = TopicProcessor(processor, tasks_config, context, debug=debug)
+        self.debug = debug
 
-    def process_with_topics(self, directory: Path, perspectives: List[str], 
-                          num_topics: Optional[int] = None, max_workers: int = 3) -> None:
-        """Generate topics and process them for a directory."""
+    @retry_on_error(max_retries=3)
+    def process_with_topics(
+        self,
+        directory: Path,
+        perspectives: Optional[List[str]] = None,
+        num_topics: Optional[int] = None,
+        max_workers: Optional[int] = 3,
+        jsons_per_perspective: Optional[int] = 3,
+        num_consolidation_steps: Optional[int] = 2,
+        max_previous_topics: Optional[int] = 5
+    ):
+        """Generate topics and process them for a directory with retries."""
         try:
             # First, generate topics if they don't exist
             topics_file = directory / "topics.json"
             if not topics_file.exists():
-                self.topic_generator.generate(directory, perspectives, num_topics)
+                self.topic_generator.generate(
+                    directory, 
+                    perspectives, 
+                    num_topics, 
+                    jsons_per_perspective, 
+                    num_consolidation_steps
+                )
             
             # Then process the topics
-            self.process_directory(directory, max_workers)
+            self.process_directory(directory, max_workers, max_previous_topics)
             
         except Exception as e:
             print(f"❌ Failed to process directory: {directory}")
             print(f"Error: {str(e)}")
             raise
 
-    def process_directory(self, directory: Path, max_workers: int = 3) -> None:
+    def process_directory(self, directory: Path, max_workers: int, max_previous_topics: int) -> None:
         """Process a single directory with its sections using parallel processing."""
         print(f"\nProcessing directory: {directory}")
         
@@ -56,7 +73,7 @@ class DirectoryProcessor:
                         section_name,
                         section_topics,
                         pdf_files,
-                        5  # max_previous_topics
+                        max_previous_topics
                     )
                     futures.append(future)
 
