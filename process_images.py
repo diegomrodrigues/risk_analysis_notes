@@ -7,14 +7,13 @@ import argparse
 from dotenv import load_dotenv
 
 # Base directory for processing
-BASE_DIR = "./12. Models"
+BASE_DIR = "./"
 
 # Configuration for directory filtering
 TARGET_FOLDERS = [
-    # Add specific folders to process, if needed
+    "02. Forecasting Risk and Correlations"
 ]
 EXCLUDED_FOLDERS = [
-    "01. Deep Seek Math"
 ]
 
 def load_tasks_config(tasks_dir: str = './agent/tasks') -> dict:

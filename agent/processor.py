@@ -90,7 +90,7 @@ class TaskProcessor:
             print(f"  - Extract JSON: {extract_json}")
             print(f"  - Files attached: {bool(files)}")
             print(f"  - Content length: {len(content)}")
-            print(f"  - Model config: {task_config.get('model_name', 'gemini-2.0-flash-exp')}")
+            print(f"  - Model config: {task_config.get('model_name', 'gemini-2.0-pro-exp-02-05')}")
         
         model = self.create_model(task_config)
         chat = self._initialize_chat(model, files)
