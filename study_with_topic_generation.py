@@ -16,7 +16,7 @@ PERSPECTIVES = [
 ]
 
 TARGET_FOLDERS = [
-    "02. Forecasting Risk and Correlations"
+    "04. Monte Carlo Methods"
 ]
 EXCLUDED_FOLDERS = [
 ]

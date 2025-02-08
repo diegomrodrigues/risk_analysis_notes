@@ -51,6 +51,8 @@ class ImageProcessor:
             return
 
         image_entries = []
+        figure_counter = 1  # Track figure numbers per directory
+        
         for image_file in images_dir.iterdir():
             if image_file.suffix.lower() in ['.png', '.jpg', '.jpeg']:
                 if self.debug:
@@ -58,32 +60,27 @@ class ImageProcessor:
                 
                 result = self._process_single_image(image_file, pdf_file)
                 if result:
-                    # Get the new filename from the result
-                    new_filename = result.get('filename', '')
-                    if new_filename:
-                        # Preserve the original file extension
-                        new_filename = f"{new_filename}{image_file.suffix}"
-                        new_path = image_file.parent / new_filename
-                        try:
-                            image_file.rename(new_path)
-                            if self.debug:
-                                print(f"  - Renamed to: {new_filename}")
-                            # Update the path to reflect the new filename
-                            relative_path = new_path.relative_to(directory)
-                        except Exception as e:
-                            print(f"❌ Failed to rename {image_file.name}: {str(e)}")
-                            relative_path = image_file.relative_to(directory)
-                    else:
-                        relative_path = image_file.relative_to(directory)
-                
-                image_entries.append({
-                    'path': str(relative_path),
-                    'description': result.get('description', ''),
-                    'filename': new_filename or image_file.name
-                })
+                    # Generate sequential filename
+                    new_filename = f"figure{figure_counter}{image_file.suffix}"
+                    new_path = image_file.parent / new_filename
+                    
+                    try:
+                        image_file.rename(new_path)
+                        if self.debug:
+                            print(f"  - Renamed to: {new_filename}")
+                        
+                        image_entries.append({
+                            'path': str(new_path.relative_to(directory)),
+                            'description': result.get('description', ''),
+                            'filename': new_filename
+                        })
+                        figure_counter += 1  # Increment counter after successful processing
+                        
+                    except Exception as e:
+                        print(f"❌ Failed to rename {image_file.name}: {str(e)}")
 
         if image_entries:
-            self._generate_markdown_summary(directory, image_entries)
+            self._generate_json_summary(directory, image_entries)
 
     def _process_single_image(self, image_file: Path, pdf_file: Path) -> Optional[Dict]:
         """Process a single image with its associated PDF."""
@@ -104,17 +101,18 @@ class ImageProcessor:
             print(f"❌ Failed to process image {image_file.name}: {str(e)}")
             return None
 
-    def _generate_markdown_summary(self, directory: Path, entries: List[Dict]) -> None:
-        """Generate images.md summary file."""
-        md_content = ["# Image Catalog\n\n"]
-        md_content.append("| Path | Description | Filename |\n")
-        md_content.append("|------|-------------|----------|\n")
+    def _generate_json_summary(self, directory: Path, entries: List[Dict]) -> None:
+        """Generate images.json summary file."""
+        json_data = {
+            "images": [
+                {
+                    "filename": entry['filename'],
+                    "path": entry['path'],
+                    "description": entry['description']
+                } for entry in entries
+            ]
+        }
         
-        for entry in entries:
-            md_content.append(
-                f"| `{entry['path']}` | {entry['description']} | `{entry['filename']}` |\n"
-            )
-        
-        output_file = directory / "images.md"
-        output_file.write_text("\n".join(md_content), encoding='utf-8')
+        output_file = directory / "images.json"
+        output_file.write_text(json.dumps(json_data, indent=2), encoding='utf-8')
         print(f"✔️ Generated image catalog at: {output_file}") 

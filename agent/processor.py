@@ -158,21 +158,25 @@ class TaskProcessor:
             # Handle image content injection
             if "{images_content}" in user_message:
                 try:
-                    # Extract directory from context
                     dir_line = next(line for line in content.split('\n') 
                                   if line.startswith("DIRECTORY_PLACEHOLDER ="))
                     directory = Path(dir_line.split('=', 1)[1].strip())
-                    images_file = directory / "images.md"
+                    images_file = directory / "images.json"
                     
                     if images_file.exists():
                         images_content = images_file.read_text(encoding='utf-8')
+                        # Validate and format JSON
+                        json.loads(images_content)
+                        images_content = json.dumps(json.loads(images_content), indent=2)
                     else:
-                        print(f"No images.md available in directory: {directory}")
+                        print(f"No images.json available in directory: {directory}")
                         return "No images available", False
                         
                     user_message = user_message.replace("{images_content}", images_content)
                 except (StopIteration, IndexError):
                     user_message = user_message.replace("{images_content}", "No directory context available")
+                except json.JSONDecodeError:
+                    user_message = user_message.replace("{images_content}", "Invalid image catalog format")
             
             return user_message.replace("{content}", content), True
         

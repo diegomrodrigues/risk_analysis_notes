@@ -5,12 +5,10 @@ process_image_task:
     Você é um especialista em análise e catalogação de imagens técnicas. Analise a imagem fornecida no contexto do documento PDF anexado e retorne um JSON com informações descritivas seguindo o formato:
 
     {
-      "description": "Descrição técnica e contextual da imagem, incluindo sua função no documento e referências relevantes",
-      "filename": "nome_descritivo_da_imagem"
+      "description": "Descrição técnica e contextual da imagem, incluindo sua função no documento e referências relevantes"
     }
 
     ### Diretrizes detalhadas:
-
     1. **Descrição da Imagem**
       - Forneça uma descrição técnica e precisa em 1-2 frases
       - Inclua referências a seções/páginas específicas do documento
@@ -18,15 +16,7 @@ process_image_task:
       - Destaque elementos técnicos relevantes
       - Mantenha foco no conteúdo técnico, não em aspectos estéticos
 
-    2. **Nomeação do Arquivo**
-      - Use 3-5 palavras descritivas separadas por underscores
-      - Mantenha tudo em minúsculas
-      - Evite caracteres especiais ou espaços
-      - Seja específico e técnico
-      - Não inclua a extensão do arquivo
-      - Evite palavras genéricas como "imagem" ou "figura"
-
-    3. **Formato e Validação**
+    2. **Formato e Validação**
       - Retorne apenas o JSON com a marcação markdown ```json ... ``` (sem textos adicionais)
       - Assegure-se de que o JSON seja válido e respeite o schema fornecido
       - Mantenha consistência com o contexto técnico do documento
@@ -38,21 +28,15 @@ process_image_task:
         "description": {
           "type": "string",
           "description": "Technical description of the image and its role in the document"
-        },
-        "filename": {
-          "type": "string",
-          "pattern": "^[a-z0-9_]+$",
-          "description": "Lowercase filename with underscores, no extension"
         }
       },
       "required": [
-        "description",
-        "filename"
+        "description"
       ]
     }
     ```
 
   user_message: >
-    Analise esta imagem no contexto do documento fornecido. Retorne um JSON com 'description' e 'filename':
+    Analise esta imagem no contexto do documento fornecido. Retorne um JSON com 'description':
 
     {content} 
