@@ -7,6 +7,8 @@ from typing import Optional, Dict, Any, List
 from pathlib import Path
 from .utils import retry_on_error
 import re  # Ensure the re module is imported
+import subprocess
+import tempfile
 
 class TaskProcessor:
     """Handles communication with the Gemini API for processing tasks."""
@@ -127,6 +129,11 @@ class TaskProcessor:
                         print("  ✔️ JSON extraction successful")
                         print(f"  - JSON length: {len(extracted_json)}")
                     print("✓ JSON extraction succeed")
+                    
+                    # Add plot generation if configured
+                    if task_config.get('generate_plots', False):
+                        result = self._generate_plots_from_code(extracted_json, task_config)
+                    
                     return extracted_json
                 else:
                     if self.debug:
@@ -161,22 +168,17 @@ class TaskProcessor:
                     dir_line = next(line for line in content.split('\n') 
                                   if line.startswith("DIRECTORY_PLACEHOLDER ="))
                     directory = Path(dir_line.split('=', 1)[1].strip())
-                    images_file = directory / "images.json"
+                    images_file = directory / "images.md"
                     
                     if images_file.exists():
                         images_content = images_file.read_text(encoding='utf-8')
-                        # Validate and format JSON
-                        json.loads(images_content)
-                        images_content = json.dumps(json.loads(images_content), indent=2)
                     else:
-                        print(f"No images.json available in directory: {directory}")
+                        print(f"No images.md available in directory: {directory}")
                         return "No images available", False
                         
                     user_message = user_message.replace("{images_content}", images_content)
                 except (StopIteration, IndexError):
                     user_message = user_message.replace("{images_content}", "No directory context available")
-                except json.JSONDecodeError:
-                    user_message = user_message.replace("{images_content}", "Invalid image catalog format")
             
             return user_message.replace("{content}", content), True
         
@@ -245,3 +247,53 @@ class TaskProcessor:
             print("  ❌ No valid JSON found in response")
         print("⚠️ No valid JSON found in response")
         return None
+
+    def _generate_plots_from_code(self, content: str, task_config: Dict[str, Any]) -> str:
+        """Extract and execute Python code blocks to generate plots."""
+        if self.debug:
+            print("\n🔍 DEBUG: Plot generation from code blocks")
+        
+        # Create images directory if needed
+        images_dir = Path(task_config.get('directory', '.')) / "images"
+        images_dir.mkdir(exist_ok=True)
+        
+        # Find all Python code blocks
+        code_blocks = re.findall(r'```python\n(.*?)\n```', content, re.DOTALL)
+        
+        for i, code in enumerate(code_blocks):
+            try:
+                # Create temporary file
+                with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.py') as f:
+                    # Redirect plots to file instead of showing
+                    modified_code = code.replace('plt.show()', 'plt.savefig(f"{images_dir}/plot_{i}.png")')
+                    f.write(modified_code)
+                    temp_path = f.name
+                
+                # Execute in isolated process
+                result = subprocess.run(
+                    ['python', temp_path],
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
+                    cwd=images_dir
+                )
+                
+                if result.returncode == 0 and (images_dir / f"plot_{i}.png").exists():
+                    # Replace code block with image reference
+                    content = content.replace(
+                        f'```python\n{code}\n```',
+                        f'![Generated plot](./images/plot_{i}.png)',
+                        1
+                    )
+                    
+                if self.debug:
+                    print(f"  - Processed code block {i+1}, return code: {result.returncode}")
+                
+            except Exception as e:
+                if self.debug:
+                    print(f"  ⚠️ Error processing code block {i+1}: {str(e)}")
+                continue
+            finally:
+                Path(temp_path).unlink(missing_ok=True)
+        
+        return content

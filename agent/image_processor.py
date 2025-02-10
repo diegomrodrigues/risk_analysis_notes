@@ -102,17 +102,38 @@ class ImageProcessor:
             return None
 
     def _generate_json_summary(self, directory: Path, entries: List[Dict]) -> None:
-        """Generate images.json summary file."""
+        """Generate images.json summary file and markdown documentation."""
+        # Generate JSON
         json_data = {
             "images": [
                 {
                     "filename": entry['filename'],
                     "path": entry['path'],
-                    "description": entry['description']
+                    "description": entry['description'],
+                    "legenda": entry.get('legenda', '')  # Add legenda field
                 } for entry in entries
             ]
         }
         
+        # Write JSON file
         output_file = directory / "images.json"
         output_file.write_text(json.dumps(json_data, indent=2), encoding='utf-8')
-        print(f"✔️ Generated image catalog at: {output_file}") 
+        print(f"✔️ Generated image catalog at: {output_file}")
+        
+        # Generate Markdown
+        markdown_content = []
+        for entry in entries:
+            figure_name = entry['filename'].split('.')[0].capitalize()
+            markdown_content.extend([
+                f"## {figure_name}",
+                "",
+                f"![{entry.get('legenda', figure_name)}](./images/{entry['filename']})",
+                "",
+                entry['description'],
+                ""
+            ])
+        
+        # Write Markdown file
+        markdown_file = directory / "images.md"
+        markdown_file.write_text('\n'.join(markdown_content), encoding='utf-8')
+        print(f"✔️ Generated markdown documentation at: {markdown_file}") 

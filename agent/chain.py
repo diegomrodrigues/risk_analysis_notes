@@ -33,6 +33,7 @@ class ChainStep:
     input_files: Optional[List[Path]] = None
     use_previous_result: bool = False
     additional_context: Optional[str] = None
+    generate_plots: bool = False
     
     # Output control
     expect_json: bool = False
