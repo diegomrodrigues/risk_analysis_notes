@@ -1,0 +1,116 @@
+{
+  "topics": [
+    {
+      "topic": "Introduction to Financial Market Investigation",
+      "sub_topics": [
+        "Investigation of financial markets involves assessing and managing investment risks, complicated by economic factors such as information asymmetry and behavioral patterns. This assessment necessitates investors to consider maximum acceptable investment risk and potential losses, often managed via Value-at-Risk (VaR) calculations, which allow controlling expected losses at a given probability level. Risk management theory is crucial in this context.",
+        "Accurate estimation and forecasting of financial asset volatility are key to studying associated risks. Assessments are conditionally dependent on historical values and external shocks. Incorporating a random term in the volatility equation can enhance estimate quality.",
+        "Binary time series analysis is valuable for modeling financial econometrics, particularly crises, business cycles, company bankruptcies, and Value-at-Risk (VaR) theory and risk management.",
+        "Dynamic binary choice models are used to forecast recessions and estimate financial crisis probabilities based on interest rates, spreads, market indices, and macroeconomic indicators.",
+        "Extreme Value Theory (EVT) is applied to discrete choice models, focusing on critical distribution values and rare event probabilities, including exceedance probability analysis."
+      ]
+    },
+    {
+      "topic": "Exceedance Probability and Risk Analysis",
+      "sub_topics": [
+        "Exceedance probability analysis, a tool within Extreme Value Theory (EVT), determines the likelihood that a random process's value will surpass a predetermined threshold at any given moment. This analysis can be modeled using logistic regression and partial likelihood functions, which is particularly useful in forecasting excess returns and has significant applications in portfolio and risk management.",
+        "An autoregressive binary choice model can evaluate the exceedance probability against different thresholds by applying indicator functions to logistic functions on intervals [0;0.5] for negative thresholds and [0.5;1] for positive ones. This model is specified for estimating the exceedance probability of return, particularly for Value-at-Risk (VaR) calculation, crucial in risk management.",
+        "Value-at-Risk (VaR) estimation naturally follows from assessing the dynamic generalized Pareto distribution of exceedances, where VaR calculation involves preliminary exceedance distribution estimation for both the right and left tails of the distribution. Estimated exceedance probabilities are directly applied in VaR calculations, with results rigorously tested for asymptotic convergence using the Engle and Manganelli dynamic quantile test, ensuring the reliability of risk estimates.",
+        "The study utilizes daily returns of PAO Sberbank shares and one-minute returns of the USD-RUB currency pair as datasets, providing empirical evidence for the model's applicability in real-world financial scenarios.",
+        "The dynamic discrete choice model is used to estimate return change direction and multiplicative time series model for forecasting excess returns, improving portfolio management and risk management strategies."
+      ]
+    },
+    {
+      "topic": "Evaluation Approach: Frequency vs. Bayesian",
+      "sub_topics": [
+        "The study of statistics includes the frequency approach, where event probability depends on occurrence frequency, and the Bayesian approach, where probability relates to personal belief in an unknown parameter's value. The Bayesian paradigm incorporates subjective a priori information (priors), reflecting researcher confidence in the simulated process. Bayesian algorithms are employed as an alternative solution to classical methods for estimating regressions, leveraging subjective a priori information on available data to characterize researcher confidence in the simulated process.",
+        "Monte Carlo Markov Chains (MCMC) are used to construct samples from the posterior distribution by sampling values from the approximation distribution and adjusting the resulting sample to match the target posterior distribution. MCMCs estimate the expectation of a random variable by analyzing the space of desired parameters.",
+        "The Hamiltonian Monte Carlo (HMC) algorithm, specifically the No-U-Turn Sampler (NUTS), obtains posterior distributions of model parameters, allowing movement in the parameter space to search for the target posterior distribution not by random jumps, but in a given direction and in accordance with the assessment of typical set behavior."
+      ]
+    },
+    {
+      "topic": "Empirical Data and Model Parameters",
+      "sub_topics": [
+        "Empirical research uses data from Sberbank shares and the dollar-ruble currency pair traded on the Moscow Exchange, obtained from Finam's official website. Daily quotes from 2014/01/13-2017/01/04 for Sberbank shares (SBER) and minute-by-minute tick-transactions from 2019/02/25-2019/03/13 for USD-RUB are analyzed.",
+        "The sample is divided into training (in-sample) and testing (out-sample) parts in ratios of 4:1 for SBER and 10:1 for USD-RUB. The model is calculated for different training sample thresholds, with the threshold delivering the best result for VaR estimation selected.",
+        "Hyperparameters of prior distributions are selected for each tool. They fall into the following classes: Inverse Gamma Distribution, Beta Distribution and Normal Distribution."
+      ]
+    },
+    {
+      "topic": "Model Validation and Diagnostic Testing",
+      "sub_topics": [
+        "Model estimation results in statistical characteristics that describe the posterior distributions of parameters, where a zero value in the volatility equation parameter indicates process stationarity. The parameter of the volatility equation corresponding to lagged return has a zero value in some estimated models, linked with process stationarity restrictions.",
+        "Geweke tests assess Markov chain convergence by comparing mean values between the first and last parts of the chain, with the null hypothesis assuming equal averages across samples.",
+        "Heidelberg-Welch tests, similar to Geweke tests, iteratively drop chain segments until the null hypothesis is accepted, ensuring correct Markov chain length and stationary distribution sampling. The Heidelberg-Welch test is applied to the whole chain and iteratively drops initial segments until the null hypothesis is accepted or 50% of the chain is dropped, confirming the length of the Markov chain is chosen correctly.",
+        "Diagnostic tools like RSTAN facilitate visualization and diagnostics of models, revealing uncorrelated parameters and continuous statistical distributions, with point clouds exhibiting similar shapes when mirrored to ensure Markov chain convergence. RSTAN, implemented for the R language, provides tools for visualization and diagnostics of the model, including scatter-plot diagrams and one-dimensional posterior distributions of model parameters, where parameters contribute to obtaining posterior distribution.",
+        "Autocorrelation functions (ACF) are analyzed to ensure values quickly approach zero, with negative values considered satisfactory; the number of effective iterations is assessed to ensure parameters are satisfactory and do not fall below 10%."
+      ]
+    },
+    {
+      "topic": "Model Visualization and VaR Forecasting",
+      "sub_topics": [
+        "Model evaluation results include the financial instrument volatility vector, exceedance probability, and VaR, visualized for initial verification and general conclusions. Each of the above indicators was visualized for initial verification and in order to draw general conclusions about the model.",
+        "Figures display exceedance probability forecasts for various assets like SBER and USD-RUB, noting that with negative thresholds, the exceedance probability ranges from [0, 0.5], and for positive thresholds, it ranges from [0.5, 1]. It is important to mention that in the figures with a negative threshold, the allowable range of values for exceedance probability is [0, 0.5], while for the positive threshold [0.5:1]. Periods of high return volatility correspond to high values of exceedance probability, though the probability is also sensitive to the deviation of return with a negative direction.",
+        "VaR construction is influenced by the autoregressive distribution parameter, which affects the presence of sharp transitions and constant values, particularly in daily data. A peculiarity of VaR construction is linked with the fact that the autoregressive distribution parameter takes the previous values if exceedance did not occur, which, affected the presence of sharp transitions and a large number of periods with a constant value, in particular, regarding daily data.",
+        "Dynamic Quantile tests are used to test the quality of the obtained VaR forecast. The Dynamic Quantile test (DQ test) evaluates the conditional convergence of obtained VaR coefficients to true values by calculating the Hit variable, which determines if VaR was exceeded and is distributed as iid Bernoulli with probability \\u03b8."
+      ]
+    },
+    {
+      "topic": "Conclusion: Autoregressive Logistic Model for Exceedance Probability",
+      "sub_topics": [
+        "This study introduces a new autoregressive logistic model specification to estimate exceedance probability as a nonlinear functional of financial asset volatility. The study offers a new autoregressive logistic model to estimate exceedance probability, a nonlinear functional of financial asset volatility, with a stochastic term added to the volatility equation.",
+        "The stochastic term added to the volatility equation considers conditional variance dependence on previous implementations and return values, in line with GARCH models, and addresses additional uncertainty using the Bayesian NUTS algorithm. The model takes into account the dependence of conditional variance on previous implementations and return values, complying with the GARCH model, and addresses additional uncertainty using the Bayesian NUTS algorithm.",
+        "Testing confirms correct model evaluation, with no Markov chain construction violations, and applies the obtained exceedance probability estimations to an econometric VaR model, tested using Engle and Manganelli's dynamic quantiles test. Testing of the obtained estimates revealed that the model was evaluated correctly; no violations in prerequisites to Markov chain construction were found.",
+        "Computations were performed using historical data of financial instruments traded on the Moscow Exchange; ordinary shares of PJSC \\\"Sberbank\\\" and USD-RUB currency pair; the thresholds were selected based on the required probability of VaR calculation."
+      ]
+    },
+    {
+      "topic": "Dynamic Quantile Test Details",
+      "sub_topics": [
+        "The dynamic quantile test (DQ test) calculates a variable to determine if VaR was exceeded, assessing conditional convergence of VaR coefficients to true values. The idea of dynamic quantile test (DQ test) is to calculate the variable Hit that determines whether VaR was exceeded.",
+        "The Hit variable, distributed as iid Bernoulli, tests significance in linear regression, using autoregressive Hit orders and lagged VaR as explanatory variables; the resulting statistics follow a \\u03c7\\u00b2 distribution. The resulting statistics has distribution x\\u00b2, where the number of degrees of freedom corresponds to the number of regressors increased by one.",
+        "The null hypothesis of the test assesses conditional and unconditional convergence of the VaR estimation to the true value; statistical values indicate if the obtained VaR estimation converges to the true value. Null hypothesis of the test: there is conditional and unconditional convergence of the VaR estimation to the true value."
+      ]
+    },
+    {
+      "topic": "Exceedance Probability and Extreme Value Theory (EVT)",
+      "sub_topics": [
+        "Extreme Value Theory (EVT) is applied to discrete choice models, focusing on critical distribution values and the probability of rare events. EVT tools analyze exceedance probability or frequency, determining the likelihood a random process's value will exceed a threshold at any given time.",
+        "Exceedance probability for random processes is effectively modeled using logistic regression and partial likelihood functions. Exceedance probability for random processes is modeled using logistic regression and partial likelihood functions, as seen in precipitation modeling.",
+        "Dynamic discrete choice models estimate return direction changes and use multiplicative time series models for forecasting excess returns, applicable to portfolio management and risk management. Dynamic discrete choice models estimate return change direction and multiplicative time series models forecast excess returns, important for portfolio and risk management.",
+        "An autoregressive binary choice model evaluates exceedance probability with indicator functions, using separate logistic functions for negative and positive thresholds.",
+        "Value-at-Risk (VaR) of financial return is estimated under the assumption of a dynamic generalized Pareto distribution of exceedances, enabling calculation of the VaR coefficient."
+      ]
+    },
+    {
+      "topic": "Model Specification and Evaluation Techniques",
+      "sub_topics": [
+        "The model uses a system of equations, including a logit function to simulate exceedance probability based on analyzed object behavior, with a new volatility equation parameterization. The autoregressive binary choice model estimates exceedance probability using a system of equations involving a threshold (Q), logistic function inversion (xt), and a volatility equation (ht).",
+        "A random term is added to the volatility equation with a distribution \\u03b7t ~ N(0, \\u03c3\\u2099), where ht is a vector of values with distribution h\\u209c|I\\u209c\\u208b\\u2081 ~ N(\\u03b1\\u2080 + \\u03b1\\u2081y\\u00b2\\u209c\\u208b\\u2081 + \\u03b2\\u2081h\\u209c\\u208b\\u2081, \\u03c3\\u2099). A new parametrization of the volatility equation includes a random term (\\u03b7t) with a normal distribution N(0, \\u03c3\\u03b7), where ht is a vector of values with a specific distribution conditional on past information.",
+        "The maximized functional of logarithmic likelihood function \\u03a0 for exceedance probability estimation model Q is defined using distribution parameters p, \\u03c3, and return y.",
+        "Bayesian algorithms are used as an alternative to classical methods for estimating regressions, leveraging subjective a priori information on available data (priors). Bayesian approach is used when probability is closely related to the degree of personal belief in what the value of the unknown parameter should be; a key feature is the use of subjective a priori information on available data (priors), which characterizes the degree of researcher confidence in what the simulated process should be.",
+        "The study uses a modification of the Hamiltonian Monte Carlo (HMC) algorithm \\u2013 No-U-Turn Sampler (NUTS) \\u2013 to obtain posterior distributions of model parameters. The study uses a modification of the Hamiltonian Monte Carlo (HMC) algorithm, specifically the No-U-Turn Sampler (NUTS), to obtain posterior distributions of model parameters."
+      ]
+    },
+    {
+      "topic": "Empirical Research and Statistical Analysis",
+      "sub_topics": [
+        "Empirical research analyzes Sberbank shares and the USD-RUB currency pair, using daily quotes and minute-by-minute tick-transactions. Empirical research relies on the data about shares of Public Stock Company Sberbank and the dollar-ruble currency pair, which are traded on the Moscow Exchange.",
+        "The data sample is divided into training (in-sample) and testing (out-sample) parts with ratios of 4:1 and 10:1 for SBER and USD-RUB respectively. The whole sample was divided into 2 parts: training (in-sample) and testing (out-sample).",
+        "Hyperparameters of prior distributions are selected for each tool, including Inverse Gamma, Beta, and Normal distributions. Hyperparameters of prior distributions were selected for each tool. They fall into the following classes: Inverse Gamma Distribution, Beta Distribution and Normal Distribution.",
+        "Model estimation results in a set of statistical characteristics describing posterior parameter distributions, with the volatility equation parameter having a zero value in some models. The result of model estimation is a set of statistical characteristics describing posterior distributions of the set of parameters.",
+        "Geweke tests, Heidelberg-Welch tests, and visualizations using RSTAN are employed to diagnose Markov chain convergence and model stability. Geweke test is a Markov chain convergence diagnosis based on a comparison of the mean values of the first and last part of the Markov chain. Heidelberg-Welch test is similar to the Geweke test, but here the test is applied first to the whole chain, then if the null hypothesis is rejected then the first 10%, 20% of the chain are consistently dropped until the null hypothesis is accepted or 50% is dropped. RSTAN functional implemented for the R language implies a wide range of tools for visualization and diagnostics of the model constructed using methods."
+      ]
+    },
+    {
+      "topic": "VaR and Exceedance Probability: Model Evaluation",
+      "sub_topics": [
+        "The model calculates the financial instrument volatility vector, exceedance probability, and VaR, visualized for initial verification and general conclusions. The result of the model evaluation is calculation of the financial instrument volatility vector, exceedance probability and VaR. Each of the above indicators was visualized for initial verification and in order to draw general conclusions about the model.",
+        "For negative thresholds, the allowable range of exceedance probability values is [0, 0.5], while for positive thresholds, it is [0.5:1], associated with the logit function type. It is important to mention that in the figures with a negative threshold, the allowable range of values for exceedance probability is [0, 0.5], while for the positive threshold [0.5:1].",
+        "High return volatility periods correspond to high exceedance probability values, with sensitivity to return deviations in a negative direction.",
+        "VaR construction involves an autoregressive distribution parameter that takes previous values if exceedance does not occur, affecting the presence of sharp transitions. A peculiarity of VaR construction is linked with the fact that the autoregressive distribution parameter takes the previous values if exceedance did not occur, which, affected the presence of sharp transitions and a large number of periods with a constant value, in particular, regarding daily data.",
+        "Dynamic Quantile (DQ) tests, based on the work of Engle (2004), are used to assess the conditional convergence of obtained VaR coefficients to the true values. It also seems necessary to test the quality of the obtained VaR forecast. For this purpose it was decided that the best methodology to adopt is the one proposed by Engle04."
+      ]
+    }
+  ]
+}

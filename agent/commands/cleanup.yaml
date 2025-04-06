@@ -1,5 +1,0 @@
-chain_steps:
-  - name: "Cleanup Content"
-    tasks: ["cleanup_task"]
-    stop_at: "<!-- END -->"
-    max_iterations: 2 

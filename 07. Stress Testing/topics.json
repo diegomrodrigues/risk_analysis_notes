@@ -1,0 +1,54 @@
+{
+  "topics": [
+    {
+      "topic": "Stress Testing and VaR",
+      "sub_topics": [
+        "Value-at-Risk (VaR) quantifies potential losses under normal market conditions, defined by the confidence level, typically 99%. While increasing the confidence level may reveal larger, but less likely losses, VaR measures based on recent historical data may fail to identify extreme, unusual situations that can cause severe losses. Therefore, stress testing complements VaR by considering scenarios outside the VaR window but deemed probable, aiding in identifying 'blind spots' in pricing and risk management systems and assessing vulnerability to rare events.",
+        "Stress tests are non-statistical risk measures without an associated probability statement like VaR. Required by the Basel Committee for internal model usage, they identify and manage situations causing extraordinary losses using scenario analysis, model stress, volatilities, correlations, and policy responses. The primary goal is to communicate and understand the risks an institution faces and plan responses, such as reserving economic capital or modifying the portfolio to lessen a specific event's impact by restructuring the business or securing alternative funding sources.",
+        "Scenario analysis evaluates the portfolio under various extreme but plausible world states, involving significant movements in key variables and requiring full valuation methods. This method links losses to specific events, offering a more intuitive understanding than statistical distributions. Scenarios can be historical, drawn from past events, or prospective (hypothetical), based on plausible economic and political developments. Scenario identification should be guided by the specific portfolio, focusing on scenarios that can generate extreme losses.",
+        "Stress testing is primarily used to understand a firm's risk profile and, increasingly, with VaR for capital allocation. When stress tests reveal weaknesses, management should take steps to manage identified risks, such as reserving sufficient capital or altering positions to reduce exposure. The objective is to identify unusual scenarios not captured by standard VaR models, simulating shocks that have never occurred or are more likely than historical data suggests, and shocks that reflect permanent structural breaks or temporarily altered statistical patterns.",
+        "The Standard Portfolio Analysis of Risk (SPAN), introduced by the Chicago Mercantile Exchange (CME), is a scenario-based portfolio analysis system for measuring portfolio risk. It calculates margin requirements based on the portfolio's overall risk, aggregating futures and options on the same underlying instrument and using full valuation methods. SPAN identifies movements in portfolio values under a series of scenarios, seeking the largest loss a portfolio can suffer and setting the margin at that level."
+      ]
+    },
+    {
+      "topic": "Scenario Analysis Principles",
+      "sub_topics": [
+        "Scenario analysis is implemented by defining a scenario 's' as a set of changes in risk factors \u0394fk,s. Based on the hypothetical new values of the risk factors, fk,0 + \u0394fk,s, all securities in the portfolio are revalued, preferably using a full valuation method if the portfolio has non-linear components.",
+        "Scenario generation can be event-driven or portfolio-driven. In the first case, the scenario is formulated from plausible events that generate movements in the risk factors. In the second case, the risk vulnerabilities in the current portfolio are identified first, translating into adverse movements in the risk factors.",
+        "The traditional approach to scenario analysis focuses on one variable at a time. For example, the Derivatives Policy Group (DPG) provides specific guidelines for scenarios, recommending a focus on a set of specific movements, such as parallel shifts of the yield curve, twisting of the yield curve, implied volatilities changing, equity index values changing, and currencies moving.",
+        "Sensitivity testing, a traditional approach to scenario analysis, focuses on one variable at a time, applying specific movements recommended by bodies like the Derivatives Policy Group (DPG), such as parallel shifts in the yield curve, twists in the yield curve, and changes in implied volatilities."
+      ]
+    },
+    {
+      "topic": "Multidimensional Scenario Analysis",
+      "sub_topics": [
+        "Unidimensional scenarios provide an intuitive understanding of the effect of movements in key variables but do not consider correlations. Multidimensional scenarios are valuable because they consist of postulating a state of the world and inferring movements in market variables.",
+        "Prospective scenarios represent unique hypothetical surprises that are analyzed in terms of their repercussions in financial markets. Scenario definition should be done with the contribution of senior managers, who are more familiar with the company's businesses and the extreme events that can affect them.",
+        "The 'Factor Push' method attempts to account for multidimensionality by pushing up and down all risk factor variables individually and then evaluating a worst-case scenario where all variables are pushed in the direction that creates the worst loss. This approach is very conservative but completely ignores correlations.",
+        "The 'Conditional Scenario Method' systematically incorporates correlations between all variables. This method regresses the variables R on the controlled variables R*, obtaining the conditional forecast. This allows us to predict other variables conditional on the movements in the key variables using information in the covariance matrix.",
+        "Alternatively, scenario analysis can examine historical data to provide examples of joint movements in financial variables. The role of the risk manager is to identify scenarios that may be outside the VaR window. Each of these scenarios will produce a set of joint movements in financial variables that automatically takes correlations into account.",
+        "Historical scenarios are quite useful for measuring joint movements in financial variables. Their disadvantage, from the perspective of the risk manager, is the limited number of extreme events. Whenever possible, very long histories should be considered. These give a long-term perspective that may be absent from recent data.",
+        "Key stress tests focus on interest rates. Historical scenarios include the 1994 bond market crisis, the 1997 Asian currency crisis, the LTCM and Russia crises, and the terrorist attack on the World Trade Center, all of which led to global shocks in interest rates. Stress tests involving stocks, currencies, commodities, and credit are also common.",
+        "Prospective scenarios represent unique hypothetical surprises, analyzed in terms of their repercussions in financial markets, such as the impact of an earthquake in Tokyo or a Korean reunification."
+      ]
+    },
+    {
+      "topic": "Stress Testing of Models and Parameters",
+      "sub_topics": [
+        "A stress-testing process should consider not only movements in market variables but also the other components of the risk management system, i.e., the security valuation models and the risk engine.",
+        "A distinction is generally made between sensitivity analysis, which examines the effect of changing the functional form of the model, and stress testing model parameters, which are inputs into the model. Derivative securities can be priced using a variety of models, with parameters typically estimated from historical data.",
+        "Pricing and risk management systems depend on specific input data, such as a set of volatilities and correlations. Correlations, however, can deviate sharply from historical averages in times of stress. A key question is whether a traditional variance-covariance-based VaR system provides adequate risk measures when historical correlation patterns break down.",
+        "In all these cases, there is no simple rule to follow for stress testing. Instead, the risk manager must be aware of the limitations, assumptions, and measurement errors in the system. Stress testing can be described as the art of verifying whether risk forecasts are robust to changes in the system's structure.",
+        "The use of a covariance matrix, which is central to conditional normal VaR modeling, can provide useful information for stress testing analysis, helping to predict movements in key variables."
+      ]
+    },
+    {
+      "topic": "Policy Responses",
+      "sub_topics": [
+        "The main function of stress testing is to communicate and understand the risks to which the institution is exposed. The next question is what to do if the size of the stress loss seems unacceptably large.",
+        "Relevant scenarios, however, require careful planning. One response is for the institution to reserve sufficient economic capital to absorb the worst losses revealed by stress tests. In many cases, however, this value may be too large, which will make it uneconomical.",
+        "Risk limits are frequently based on stress test results, in addition to the usual VaR or notional value limits. This action plan should help ensure that the institution survives this scenario."
+      ]
+    }
+  ]
+}

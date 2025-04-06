@@ -1,0 +1,65 @@
+{
+  "topics": [
+    {
+      "topic": "Introduction to Exceedance Probability Forecasts",
+      "sub_topics": [
+        "Exceedance probability forecasts predict the likelihood of a financial asset's return surpassing a predetermined threshold within a specific time frame, offering crucial insights into potential risks and opportunities. They are used to assess tail risk, estimate Value at Risk (VaR), and Expected Shortfall (ES), often employing adaptations of Extreme Value Theory (EVT).",
+        "These forecasts have broad applicability, including predicting currency crises, informing trading strategies by considering exceedances above or below specific thresholds, managing energy price spikes, assessing flood and drought risks based on precipitation thresholds, and monitoring inflation rates.",
+        "The time-varying probability (pt) of a return (y\\u2081) falling below a fixed threshold (Q) is estimated, representing the exceedance probability if Q is in the lower tail and (1-pt) if Q is in the upper tail of the returns distribution. Heteroskedasticity, the time-varying volatility of daily returns, necessitates models like GARCH to estimate exceedance probabilities and capture this dynamic behavior.",
+        "Threshold selection significantly impacts the dynamics of exceedance probability, with investors responding differently to signals of varying magnitudes. Optimizing threshold choice is crucial for maximizing responsiveness to volatility changes. Direct modeling of exceedance probabilities, such as with autoregressive logit models, offers an alternative to traditional methods that rely on distributional assumptions, addressing limitations of models that assume uniform dynamics. This motivates quantile modeling, where autoregressive logit models can be applied to model the probability of exceeding a threshold."
+      ]
+    },
+    {
+      "topic": "Autoregressive Modeling of Exceedance Probability",
+      "sub_topics": [
+        "Logistic autoregression is a natural approach for time series modeling of exceedance probabilities, utilizing lagged values of the time series as regressors to predict the likelihood of exceeding a threshold. Autoregressive logit models can be extended to model exceedance probabilities, modeling the probability of price changes in trade-by-trade data.",
+        "Conditional Autoregressive Logit (CARL) models are introduced to model exceedance probability, differing from previous autoregressive logit models by focusing on exceedance over non-zero thresholds and restricting the probability to vary within specific ranges (0 to 0.5 for negative thresholds, 0.5 to 1 for positive thresholds). This addresses the limitation of standard logit models in financial returns with chosen thresholds Q not close to 0.",
+        "Various CARL models differ in the specification of xt (the logit of (2pt-I(Q>0))), including models that incorporate lagged indicators (CARL-Ind, CARL-AsymInd), absolute values of returns (CARL-Abs, CARL-AsymAbs), and GARCH structures (CARL-Vol, CARL-AsymVol) to capture volatility and leverage effects. These variations allow for asymmetric responses to positive and negative returns, enhancing their ability to forecast exceedance probabilities.",
+        "CARL-Vol models incorporate a GARCH(1,1) structure for the variance, allowing a separate exceedance probability model to be estimated for different thresholds without requiring a distributional assumption. The CARL-AsymVol model extends this by incorporating the structure of a GJRGARCH(1,1) model, capturing the leverage effect through the inclusion of terms that differentiate between positive and negative returns."
+      ]
+    },
+    {
+      "topic": "Parameter Estimation for CARL Models",
+      "sub_topics": [
+        "Maximum likelihood estimation based on the Bernoulli distribution is a standard approach for estimating probabilistic models for binary response variables, used to model the probability pt of yr falling below a threshold Q. However, it may be inefficient for modeling exceedance probabilities as it does not capture the extent to which the variable exceeds the threshold.",
+        "Constrained maximum likelihood estimation based on the asymmetric Laplace (AL) distribution is used as an alternative to Bernoulli likelihood, aiming to capture the degree to which an observation exceeds the threshold by constructing the likelihood function from the AL distribution. This approach adapts quantile regression to estimate models for exceedance probability by using a constant quantile Q and a time-varying probability pt.",
+        "Quantile regression can be used to estimate the parameters in a model for the quantile of a variable, corresponding to a chosen probability level, which is related to the exceedance probability. The AL density is rewritten to have a time-varying probability pt and fixed location parameter Q, where pt is the probability of yt falling below Q, allowing for the estimation of models for exceedance probability.",
+        "To ensure consistent estimation, the likelihood maximization is constrained by a penalty term that enforces a necessary condition for the probability of the variable falling below the threshold. A quasi-maximum likelihood approach based on the AL distribution can be used to estimate models for the exceedance probability, capturing the degree to which an observation exceeds the threshold."
+      ]
+    },
+    {
+      "topic": "Empirical Evaluation of Exceedance Probability Forecasts",
+      "sub_topics": [
+        "Empirical evaluation involves using daily log returns for stock indices (FTSE 100, NIKKEI 225, S&P 500) to evaluate day-ahead forecasts, with a variety of low and high thresholds considered. Out-of-sample forecasts are generated by estimating model parameters on a training period and then forecasting exceedance probabilities for a subsequent period, ensuring forecasts are based only on past data.",
+        "Probability forecasting methods include historical simulation, filtered historical simulation, and fitting GARCH(1,1) and GJRGARCH(1,1) models with parameters estimated using a Student-t distribution, as well as the asymmetric power APARCH(1,1) model. Historical simulation serves as a benchmark, estimating exceedance probabilities based on the proportion of past observations below the threshold, similar to historical simulation VaR estimators.",
+        "The six CARL models are implemented with estimation based on both a Bernoulli likelihood and the constrained maximization of the AL likelihood, and initial probability estimates and variance estimates are calculated for use in the autoregressive logit models.",
+        "The performance of the models is assessed using the Brier score, a measure of the mean squared error for a set of probability forecasts, with lower values indicating better performance. Brier skill scores are calculated to compare the Brier score of each method to a reference method (historical simulation), with higher values indicating superior accuracy and positive values indicating outperformance of the reference method. Out-of-sample evaluation is performed using the Brier score to assess the accuracy of the day-ahead probability forecasts, and the Brier skill score is calculated to compare the Brier score to a reference method (historical simulation)."
+      ]
+    },
+    {
+      "topic": "Application of Exceedance Probability Forecasts within a New EVT Method",
+      "sub_topics": [
+        "Exceedance probability forecasts are integrated into a peaks over threshold (POT) EVT approach to estimate Value at Risk (VaR) and Expected Shortfall (ES), with a focus on adapting the POT method for financial returns. The POT method considers exceedances over a high threshold, Q, estimating VaR from the distribution of exceedances.",
+        "Under i.i.d. assumptions, exceedances follow a Poisson distribution, and for large samples, they obey a generalized Pareto distribution (GPD), characterized by scale and shape parameters. A time-varying POT (TVPOT) approach involves selecting a threshold, estimating time-varying exceedance probabilities using a CARL model, and fitting a GPD to the exceedances with an autoregressive model for the scale.",
+        "The time-varying probability of exceeding Q is estimated using a CARL model, specifically the CARL-AsymVol model, estimated using constrained maximum likelihood based on the AL density. The final step involves fitting a GPD to the exceedances beyond Q with an autoregressive model for the scale, initializing the scale and updating it based on the standard deviation of the exceedances.",
+        "VaR and ES forecasts are derived from the exceedance probability and scale models, providing dynamic risk measures that adapt to changing market conditions. Out-of-sample VaR forecast evaluation is performed using a test for unconditional coverage and a test for conditional coverage, and the hit percentage is defined as the percentage of observations falling below the estimator."
+      ]
+    },
+    {
+      "topic": "Out-of-Sample VaR Forecast Evaluation",
+      "sub_topics": [
+        "Day-ahead VaR forecasts were evaluated for three stock indices and six VaR probability levels (0.5%, 1%, 5%, 95%, 99%, 99.5%), estimating model parameters using four samples of 2500 and evaluating day-ahead forecasts for the next 250 periods, leading to 1000 out-of-sample forecasts.",
+        "The VaR forecasts were evaluated using a test for unconditional coverage and a test for conditional coverage, defining the hit percentage as the percentage of observations falling below the estimator and using Engle and Manganelli's (2004) dynamic quantile (DQ) test to test conditional coverage.",
+        "The GARCH models were notably improved by using EVT instead of the Student-t distribution, and the best results corresponded to symmetric absolute value and asymmetric slope CAViaR, and the two TVPOT methods."
+      ]
+    },
+    {
+      "topic": "Concluding Comments",
+      "sub_topics": [
+        "CARL models show promising results for day-ahead prediction of exceedance probabilities for stock index returns, with the best model (CARL-AsymVol) relating exceedance probability to a proxy for volatility and incorporating asymmetry.",
+        "Estimating CARL model parameters using a constrained maximum likelihood based on the AL likelihood provides slightly better accuracy than the standard Bernoulli likelihood, and the CARL-AsymVol model is very competitive in terms of the Brier score compared to GARCH and historical simulation benchmarks.",
+        "Applying exceedance probability forecasts to a new time-varying POT EVT approach to VaR and ES estimation, using CARL model probability forecasts and an autoregressive model for the scale of the GPD, the new method performs well compared to historical simulation, filtered historical simulation, CAViaR, and GARCH-based approaches."
+      ]
+    }
+  ]
+}

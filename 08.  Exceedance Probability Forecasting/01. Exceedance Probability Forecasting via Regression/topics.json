@@ -1,0 +1,14 @@
+{
+  "topics": [
+    {
+      "topic": "Models",
+      "sub_topics": [
+        "Deep feedforward neural networks are utilized with specific architectures (e.g., 2 hidden layers with 32 and 16 units, respectively), dropout regularization, rectified linear unit activation functions, and Adam optimizers, trained using mean squared error and validation data over 30 epochs.",
+        "Regression approaches are used in two ways: a Direct approach (D) where exceedance probability is the ratio of ensemble members predicting values above a threshold, and an approach using the CDF (CDF) to transform forecasts into exceedance probabilities.",
+        "Heterogeneous regression ensembles (HRE) combine diverse base models (Cubist, Bagging, Ridge, ElasticNet, LASSO, MARS, LGBM, ExtraTree, AdaBoost, RFR, PLS, PCR, KNN, NN) with parameter tuning and ensemble trimming based on validation set performance, leveraging a simple average for combination.",
+        "The Weibull distribution is applied to model point forecasts, assuming that the forecast can be modeled according to a right-skewed Weibull distribution with a location parameter equal to the forecast y, the scale and shape parameters are estimated using the training data.",
+        "Classification models, such as Random Forest Classifier (RFC) and Logistic Regression (LR), are compared against forecasting methods, where the combination of forecasting models with the CDF is expected to outperform direct ensemble-based methods."
+      ]
+    }
+  ]
+}
